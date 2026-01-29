@@ -39,10 +39,10 @@ export default tool({
     // Determine scope flags
     const scopeFlags = args.projectLevel ? [] : ["-g"]
 
-    // Install skills (non-interactive with -y flag)
+    // Install skills (non-interactive with -y flag, -a opencode for OpenCode agent)
     const results: string[] = []
     try {
-      const result = await Bun.$`npx skills add ${repoUrl} ${scopeFlags} -y ${skillFlags}`.text()
+      const result = await Bun.$`npx skills add ${repoUrl} ${scopeFlags} -a opencode -y ${skillFlags}`.text()
       for (const skill of skills) {
         results.push(`- ${skill}: OK`)
       }

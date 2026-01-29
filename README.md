@@ -118,10 +118,10 @@ opencode run --agent review-setup "detect the project stack"
 opencode run --agent review-setup "detect the project stack --project"
 
 # Manual (global)
-npx skills add https://github.com/yldgio/anomalyco --skill nextjs -g -y
+npx skills add https://github.com/yldgio/anomalyco --skill nextjs -a opencode -g -y
 
 # Manual (project-level, to .opencode/rules/)
-npx skills add https://github.com/yldgio/anomalyco --skill nextjs -y
+npx skills add https://github.com/yldgio/anomalyco --skill nextjs -a opencode -y
 ```
 
 For project-specific skills via the `install-skill` tool, use `projectLevel: true`:

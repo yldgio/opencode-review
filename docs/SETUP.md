@@ -246,10 +246,10 @@ Skills can be installed globally (shared across projects) or at project level.
 opencode run --agent review-setup "detect the project stack"
 
 # Manual installation via npx (global)
-npx skills add https://github.com/yldgio/anomalyco --skill nextjs -g -y
+npx skills add https://github.com/yldgio/anomalyco --skill nextjs -a opencode -g -y
 
 # Manual installation via npx (project-level)
-npx skills add https://github.com/yldgio/anomalyco --skill nextjs -y
+npx skills add https://github.com/yldgio/anomalyco --skill nextjs -a opencode -y
 ```
 
 #### Using the install-skill tool directly
@@ -404,7 +404,7 @@ export OPENCODE_CONFIG_DIR=/path/to/my/config
 
 2. Install skills manually:
    ```bash
-   npx skills add https://github.com/yldgio/anomalyco --skill <name>
+   npx skills add https://github.com/yldgio/anomalyco --skill <name> -a opencode -y
    ```
 
 ---
