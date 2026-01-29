@@ -2,6 +2,27 @@
 
 A multi-agent code review system that automatically adapts to your project's technology stack.
 
+## Architecture Overview
+
+This system uses **global installation**: agents are installed to `~/.config/opencode/` and are available in all your projects without copying files.
+
+```
+~/.config/opencode/              (Global - installed once)
+├── agents/
+│   ├── review-coordinator.md    ← Main orchestrator
+│   ├── review-setup.md          ← Stack detection
+│   ├── review-frontend.md       ← Frontend specialist
+│   ├── review-backend.md        ← Backend specialist
+│   └── review-devops.md         ← DevOps specialist
+└── tools/
+    └── install-skill.ts         ← Skill installer
+
+Your Project/                    (No files installed by default)
+└── .opencode/
+    └── rules/
+        └── stack-context.md     ← Created by @review-setup (optional)
+```
+
 ## Quick Start
 
 ### Prerequisites
@@ -24,84 +45,207 @@ curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install
 irm https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.ps1 | iex
 ```
 
-**With options:**
-```bash
-# Specify target directory
-curl -fsSL https://... | bash -s -- /path/to/project
-
-# CI mode (non-interactive)
-curl -fsSL https://... | bash -s -- --ci
-
-# Both
-curl -fsSL https://... | bash -s -- /path/to/project --ci
-```
-
 #### Option 2: Clone and Install
 
 ```bash
 git clone https://github.com/yldgio/opencode-review /tmp/code-review
-cd /path/to/your/project
-/tmp/code-review/install.sh .
+/tmp/code-review/install.sh
 ```
 
 #### Option 3: Manual Copy
 
-1. Copy the `.opencode/` folder to your project root
-2. Run stack detection:
-   ```bash
-   opencode run "@review-setup detect this project"
-   ```
-
-### Running a Code Review
+Copy the agent and tool files to your global OpenCode config:
 
 ```bash
+# Create directories
+mkdir -p ~/.config/opencode/agents
+mkdir -p ~/.config/opencode/tools
+
+# Copy agents
+cp .opencode/agent/*.md ~/.config/opencode/agents/
+
+# Copy tools
+cp .opencode/tools/*.ts ~/.config/opencode/tools/
+```
+
+### Usage
+
+Navigate to any project and use the review agents:
+
+```bash
+cd /path/to/your/project
+
+# Run stack detection (optional but recommended)
+opencode run "@review-setup"
+
 # Review a specific file
 opencode run "@review-coordinator review src/api/users.ts"
 
-# Review changes in a PR (provide diff)
+# Review changes in a PR
 git diff main...HEAD | opencode run "@review-coordinator review this diff"
 
-# Interactive mode (in TUI)
+# Interactive mode
 opencode
 # Then type: @review-coordinator review src/api/users.ts
 ```
 
 ---
 
-## Modes
+## Stack Detection
 
-### Interactive Mode
+The `@review-setup` agent scans your project to detect technologies and install relevant skills.
 
-Default mode. The setup agent proposes detected stacks and asks for confirmation.
+### Detection Matrix
 
-```bash
-./install.sh /path/to/project
+| File Pattern | Stack | Skill |
+|--------------|-------|-------|
+| `next.config.*` | Next.js | `nextjs` |
+| `package.json` with `"react"` | React | `react` |
+| `angular.json` | Angular | `angular` |
+| `package.json` with `"@nestjs/*"` | NestJS | `nestjs` |
+| `requirements.txt` with `fastapi` | FastAPI | `fastapi` |
+| `pyproject.toml` with `fastapi` | FastAPI | `fastapi` |
+| `*.csproj` or `*.sln` | .NET | `dotnet` |
+| `Dockerfile` | Docker | `docker` |
+| `.github/workflows/*.yml` | GitHub Actions | `github-actions` |
+| `azure-pipelines.yml` | Azure DevOps | `azure-devops` |
+| `*.bicep` | Bicep | `bicep` |
+| `*.tf` | Terraform | `terraform` |
+
+### Stack Context File
+
+After detection, `@review-setup` creates `.opencode/rules/stack-context.md` in your project:
+
+```markdown
+# Stack Context
+
+## Detected Stacks
+
+- .NET: Found `*.csproj` files
+- Docker: Found `Dockerfile`
+
+## Skills to Load
+
+- dotnet
+- docker
+
+## Detection Timestamp
+
+Generated: 2025-01-29T10:30:00Z
+
+## Notes
+
+.NET 8 Web API with Docker containerization.
 ```
 
-The agent will:
-1. Scan your project files
-2. Show detected technologies
-3. Ask you to confirm or modify the detection
-4. Install skills from remote repositories (e.g., `yldgio/anomalyco`)
-5. Generate the stack context file
+This file:
+- Is the **only file** added to your project
+- Can be committed to version control for team consistency
+- Can be manually edited to add/remove stacks
+- Is **optional** - review agents work without it (using generic rules)
 
-### CI Mode
+---
 
-Non-interactive mode for automated pipelines.
+## Agents
+
+### review-coordinator
+
+The main orchestrator. Analyzes code and delegates to specialized sub-agents.
 
 ```bash
-# One-liner
-curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash -s -- --ci
-
-# Or with local script
-./install.sh /path/to/project --ci
+@review-coordinator review <file-or-directory>
 ```
 
-The agent will:
-1. Scan your project files
-2. Automatically select all detected stacks
-3. Install skills from remote repositories without prompts
-4. Generate the stack context file
+**Capabilities:**
+- Reads stack context to understand your project
+- Loads relevant skills for stack-specific feedback
+- Delegates to frontend, backend, or devops agents
+- Synthesizes findings into a unified report
+
+### review-frontend
+
+Specializes in frontend code.
+
+**Focus areas:**
+- React, Angular, Vue components
+- CSS and styling
+- Accessibility (a11y)
+- Client-side performance
+
+### review-backend
+
+Specializes in backend code.
+
+**Focus areas:**
+- API design and implementation
+- Database queries and data access
+- Business logic
+- Authentication and authorization
+
+### review-devops
+
+Specializes in infrastructure.
+
+**Focus areas:**
+- Docker and containerization
+- CI/CD pipelines
+- Infrastructure as Code (Terraform, Bicep)
+- Kubernetes configurations
+
+### review-setup
+
+Detects project stack and installs skills.
+
+```bash
+@review-setup                    # Interactive mode
+@review-setup detect --ci        # CI mode (no prompts)
+```
+
+---
+
+## Skills
+
+Skills are specialized review rules for specific technologies. They're installed from remote repositories.
+
+### Skill Sources
+
+| Repository | Description |
+|------------|-------------|
+| [yldgio/anomalyco](https://github.com/yldgio/anomalyco) | Curated skills (15 skills) |
+| [github/awesome-copilot](https://github.com/github/awesome-copilot) | Community skills (optional) |
+
+### Available Skills
+
+**Core:**
+- `nextjs` - Next.js App Router patterns
+- `react` - React best practices
+- `angular` - Angular style guide
+- `fastapi` - FastAPI patterns
+- `nestjs` - NestJS architecture
+- `dotnet` - .NET conventions
+
+**DevOps:**
+- `docker` - Container best practices
+- `terraform` - IaC patterns
+- `bicep` - Azure Bicep
+- `github-actions` - GitHub Actions
+- `azure-devops` - Azure Pipelines
+
+**Additional:**
+- `vercel-react-best-practices` - React performance
+- `vercel-composition-patterns` - Component patterns
+- `web-design-guidelines` - Accessibility
+- `webapp-testing` - Playwright testing
+
+### Manual Skill Installation
+
+```bash
+# Using the install-skill tool (via OpenCode)
+opencode run "@review-setup" # This installs skills automatically
+
+# Or manually via npx
+npx skills add https://github.com/yldgio/anomalyco --skill nextjs
+```
 
 ---
 
@@ -122,20 +266,16 @@ jobs:
       - name: Install OpenCode
         run: npm install -g opencode-ai
       
-      - name: Install code review agents
-        run: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash -s -- --ci
+      - name: Install review agents
+        run: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash
       
-      - name: Run code review
+      - name: Detect stack
+        run: opencode run "@review-setup"
+      
+      - name: Review code
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Get changed files
-          CHANGED_FILES=$(gh pr view ${{ github.event.pull_request.number }} --json files -q '.files[].path')
-          
-          # Review each file
-          for file in $CHANGED_FILES; do
-            opencode run "@review-coordinator review $file" --ci
-          done
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: opencode run "@review-coordinator review src/"
 ```
 
 ### Azure DevOps
@@ -153,84 +293,11 @@ steps:
   - script: npm install -g opencode-ai
     displayName: 'Install OpenCode'
   
-  - script: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash -s -- --ci
-    displayName: 'Install code review agents'
+  - script: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash
+    displayName: 'Install review agents'
   
-  - script: |
-      opencode run "@review-coordinator review src/" --ci
+  - script: opencode run "@review-coordinator review src/"
     displayName: 'Run code review'
-```
-
----
-
-## Configuration
-
-### Stack Context
-
-After installation, the detected stack is stored in:
-```
-.opencode/rules/stack-context.md
-```
-
-You can edit this file to:
-- Add stacks that weren't detected
-- Remove stacks you don't want reviewed
-- Add custom notes for reviewers
-
-### Available Skills
-
-Skills are installed from remote repositories. The default source is [yldgio/anomalyco](https://github.com/yldgio/anomalyco).
-
-| Skill | Stack | Detection Pattern |
-|-------|-------|-------------------|
-| `nextjs` | Next.js | `next.config.*` |
-| `react` | React | `package.json` with `react` |
-| `angular` | Angular | `angular.json` |
-| `fastapi` | FastAPI | `requirements.txt` with `fastapi` |
-| `nestjs` | NestJS | `package.json` with `@nestjs/*` |
-| `dotnet` | .NET | `*.csproj`, `*.sln` |
-| `docker` | Docker | `Dockerfile` |
-| `terraform` | Terraform | `*.tf` |
-| `github-actions` | GitHub Actions | `.github/workflows/*.yml` |
-| `azure-devops` | Azure DevOps | `azure-pipelines.yml` |
-| `bicep` | Bicep | `*.bicep` |
-
-Additional skills available:
-- `vercel-react-best-practices` - React/Next.js performance rules
-- `vercel-composition-patterns` - React composition patterns
-- `web-design-guidelines` - UI/UX accessibility audit rules
-- `webapp-testing` - Playwright testing patterns
-
----
-
-## Agents
-
-### review-coordinator
-
-The main orchestrator. Analyzes code and delegates to specialized sub-agents.
-
-```bash
-@review-coordinator review <file-or-directory>
-```
-
-### review-frontend
-
-Specializes in frontend code: React, Angular, Vue, CSS, accessibility.
-
-### review-backend
-
-Specializes in backend code: APIs, databases, business logic, authentication.
-
-### review-devops
-
-Specializes in infrastructure: Docker, CI/CD, Terraform, Kubernetes.
-
-### review-setup
-
-Detects project stack and configures skills. Run automatically during installation.
-
-```bash
-@review-setup detect this project [--ci]
 ```
 
 ---
@@ -239,22 +306,22 @@ Detects project stack and configures skills. Run automatically during installati
 
 ### Adding Custom Rules
 
-Create additional rule files in `.opencode/rules/`:
+Create rule files in your project:
 
 ```markdown
-# .opencode/rules/team-conventions.md
+# your-project/.opencode/rules/team-conventions.md
 
 ## Our Conventions
 
 - All API responses must include `requestId`
 - Database queries must use repository pattern
-- ...
 ```
 
-Then add to `.opencode/opencode.json`:
+Then add to your project's `.opencode/opencode.json`:
 
 ```json
 {
+  "$schema": "https://opencode.ai/config.json",
   "instructions": [
     ".opencode/rules/stack-context.md",
     ".opencode/rules/team-conventions.md"
@@ -262,91 +329,83 @@ Then add to `.opencode/opencode.json`:
 }
 ```
 
-### Disabling Skills
+### Custom Config Directory
 
-Edit `.opencode/opencode.json`:
+Use `OPENCODE_CONFIG_DIR` to specify a different location for global agents:
 
-```json
-{
-  "permission": {
-    "skill": {
-      "*": "allow",
-      "angular": "deny"
-    }
-  }
-}
+```bash
+export OPENCODE_CONFIG_DIR=/path/to/my/config
+./install.sh
 ```
 
 ---
 
 ## Troubleshooting
 
-### Skills not loading
+### Agents not found
 
-1. Check `.opencode/rules/stack-context.md` exists and lists skills
-2. Verify Node.js and npm are installed (required for skill installation)
-3. Check skills were installed: `ls .opencode/skills/`
-4. Check `opencode.json` has `"skill": { "*": "allow" }`
+1. Check agents are installed globally:
+   ```bash
+   ls ~/.config/opencode/agents/
+   ```
 
-### Skill installation failed
-
-1. Ensure Node.js and npm are installed: `node --version && npm --version`
-2. Check network connectivity to GitHub
-3. Install skills manually: `npx skills add https://github.com/yldgio/anomalyco --skill <name>`
+2. Verify OpenCode loads global agents:
+   ```bash
+   opencode agent list
+   ```
 
 ### Stack not detected
 
-1. Run detection manually: `opencode run "@review-setup detect this project"`
-2. Check if your stack's indicator files exist (see detection patterns above)
+1. Run detection manually:
+   ```bash
+   opencode run "@review-setup"
+   ```
+
+2. Check if your stack's indicator files exist (see detection matrix)
+
 3. Manually add the stack to `stack-context.md`
 
-### Agent not found
+### Skills not loading
 
-Ensure `.opencode/agent/` contains the agent files and OpenCode is run from the project root.
+1. Verify Node.js and npm are installed:
+   ```bash
+   node --version && npm --version
+   ```
+
+2. Check stack-context.md exists and lists skills
+
+3. Run detection again to reinstall skills
+
+### Skill installation failed
+
+1. Check network connectivity to GitHub
+
+2. Install skills manually:
+   ```bash
+   npx skills add https://github.com/yldgio/anomalyco --skill <name>
+   ```
 
 ---
 
-## Architecture
+## Uninstall
 
-### System Overview
+Remove the agents and tools from your global config:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         User Project                            │
-├─────────────────────────────────────────────────────────────────┤
-│  .opencode/                                                     │
-│  ├── agent/                    ← Review agents                  │
-│  │   ├── review-coordinator.md                                  │
-│  │   ├── review-frontend.md                                     │
-│  │   ├── review-backend.md                                      │
-│  │   ├── review-devops.md                                       │
-│  │   └── review-setup.md                                        │
-│  ├── tools/                    ← Custom tools                   │
-│  │   └── install-skill.ts                                       │
-│  ├── rules/                    ← Project context                │
-│  │   └── stack-context.md                                       │
-│  ├── skills/                   ← Installed skills (from remote) │
-│  │   ├── nextjs/SKILL.md                                        │
-│  │   ├── react/SKILL.md                                         │
-│  │   └── ...                                                    │
-│  └── opencode.json             ← Configuration                  │
-└─────────────────────────────────────────────────────────────────┘
-                                 │
-                                 │ install-skill tool
-                                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    Skills Repository                            │
-│                 github.com/yldgio/anomalyco                     │
-├─────────────────────────────────────────────────────────────────┤
-│  skills/                                                        │
-│  ├── nextjs/SKILL.md                                            │
-│  ├── react/SKILL.md                                             │
-│  ├── docker/SKILL.md                                            │
-│  └── ... (15 skills)                                            │
-└─────────────────────────────────────────────────────────────────┘
+```bash
+rm ~/.config/opencode/agents/review-*.md
+rm ~/.config/opencode/tools/install-skill.ts
 ```
 
-### Agent Flow
+On Windows PowerShell:
+
+```powershell
+Remove-Item ~/.config/opencode/agents/review-*.md
+Remove-Item ~/.config/opencode/tools/install-skill.ts
+```
+
+---
+
+## Agent Flow Diagram
 
 ```
 User: @review-coordinator review src/api/users.ts
@@ -368,42 +427,22 @@ User: @review-coordinator review src/api/users.ts
 │ frontend │ │ backend  │ │ devops   │
 │  agent   │ │  agent   │ │  agent   │
 └──────────┘ └──────────┘ └──────────┘
-```
-
-### Setup Flow
-
-```
-User: @review-setup detect this project
+       │        │        │
+       └────────┼────────┘
                 │
                 ▼
 ┌───────────────────────────┐
-│      review-setup         │
-├───────────────────────────┤
-│ 1. Glob for config files  │
-│ 2. Read package manifests │
-│ 3. Match detection matrix │
-│ 4. (Interactive) Confirm  │
-└───────────────────────────┘
-                │
-                ▼
-┌───────────────────────────┐
-│    install-skill tool     │
-├───────────────────────────┤
-│ 1. Check Node.js/npm      │
-│ 2. npx skills add ...     │
-│ 3. Report result          │
-└───────────────────────────┘
-                │
-                ▼
-┌───────────────────────────┐
-│  Skills installed to      │
-│  .opencode/skills/        │
+│   Unified Review Report   │
+│   - Critical findings     │
+│   - Major findings        │
+│   - Minor findings        │
+│   - Verdict               │
 └───────────────────────────┘
 ```
 
-### Custom Tool: install-skill
+## Custom Tool: install-skill
 
-**Location**: `.opencode/tools/install-skill.ts`
+**Location**: `~/.config/opencode/tools/install-skill.ts`
 
 **Purpose**: Install skills from GitHub repositories with dependency checking.
 
@@ -421,19 +460,3 @@ install-skill({
   skills: ["nextjs", "react", "docker"]
 })
 ```
-
-**Behavior**:
-1. Checks Node.js is installed
-2. Checks npm is installed
-3. Normalizes repo to full URL if shorthand provided
-4. Runs `npx skills add <url> --skill <name>` for each skill
-5. Returns success/failure per skill
-
-### Skill Sources
-
-| Repository | Description |
-|------------|-------------|
-| [yldgio/anomalyco](https://github.com/yldgio/anomalyco) | Curated skills (15 skills) |
-| [github/awesome-copilot](https://github.com/github/awesome-copilot) | Community skills (optional) |
-
-Skills can be installed from any repository that follows the `skills/<name>/SKILL.md` structure.

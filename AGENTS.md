@@ -9,12 +9,19 @@ opencode-review/
 ├── .opencode/
 │   ├── agent/           # Review agents (Markdown)
 │   ├── tools/           # Custom tools (TypeScript)
-│   ├── rules/           # Project rules
-│   └── opencode.json    # Configuration
-├── templates/           # Config templates for installation
+│   └── opencode.json    # Configuration (for development)
 ├── docs/                # Documentation
-├── install.sh           # Bash installer
-└── install.ps1          # PowerShell installer
+├── install.sh           # Bash installer (global)
+├── install.ps1          # PowerShell installer (global)
+├── install-remote.sh    # Remote bash installer
+└── install-remote.ps1   # Remote PowerShell installer
+```
+
+**Installation target:**
+```
+~/.config/opencode/      (Global OpenCode config)
+├── agents/              # Review agents installed here
+└── tools/               # Custom tools installed here
 ```
 
 ## Conventions
@@ -39,10 +46,8 @@ Use [Conventional Commits](https://www.conventionalcommits.org/):
 |-------|---------|
 | `agent` | `.opencode/agent/*` |
 | `tools` | `.opencode/tools/*` |
-| `rules` | `.opencode/rules/*` |
-| `config` | `opencode.json` |
-| `installer` | `install.sh`, `install.ps1` |
-| `docs` | `docs/*` |
+| `installer` | `install.sh`, `install.ps1`, `install-remote.*` |
+| `docs` | `docs/*`, `README.md` |
 
 ### Agent Files
 
@@ -91,9 +96,8 @@ export default tool({
 | File | Purpose |
 |------|---------|
 | `.opencode/agent/review-coordinator.md` | Main orchestrator |
-| `.opencode/agent/review-setup.md` | Stack detection |
+| `.opencode/agent/review-setup.md` | Stack detection, writes stack-context.md |
 | `.opencode/tools/install-skill.ts` | Skill installer |
-| `templates/stack-context.md` | Stack context template |
 
 ## Skills
 
@@ -103,6 +107,13 @@ To add a new detectable stack:
 1. Add detection pattern to `review-setup.md` detection matrix
 2. Create skill in `yldgio/anomalyco/skills/<name>/SKILL.md`
 
+## Architecture Notes
+
+- **Global installation**: Agents install to `~/.config/opencode/` not project directories
+- **Non-invasive**: Only `stack-context.md` is written to target projects (by review-setup)
+- **Skill loading**: review-coordinator loads skills based on stack-context.md content
+- **OpenCode native**: Uses OpenCode's built-in support for global agents directory
+
 ## Testing
 
 Before committing:
@@ -110,3 +121,4 @@ Before committing:
 - [ ] Agent frontmatter complete
 - [ ] No placeholder text (`[TODO]`, `...`)
 - [ ] Scripts handle errors gracefully
+- [ ] Test installers on both Unix and Windows

@@ -4,10 +4,11 @@ A multi-agent code review system for [OpenCode](https://opencode.ai) that automa
 
 ## Features
 
+- **Global Installation** - Install once, use on any project
 - **Automatic Stack Detection** - Detects your project's technologies (React, Next.js, FastAPI, Docker, etc.)
 - **Specialized Agents** - Frontend, backend, and DevOps review specialists
 - **Remote Skills** - Installs curated skills from [yldgio/anomalyco](https://github.com/yldgio/anomalyco)
-- **CI/CD Ready** - Works in interactive mode or fully automated pipelines
+- **Non-Invasive** - Only writes one optional file to your project (`stack-context.md`)
 
 ## Quick Start
 
@@ -19,6 +20,8 @@ A multi-agent code review system for [OpenCode](https://opencode.ai) that automa
 
 ### Installation
 
+The agents are installed **globally** to `~/.config/opencode/` and work on any project.
+
 **One-liner (Unix/macOS/WSL):**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash
@@ -29,28 +32,25 @@ curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install
 irm https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.ps1 | iex
 ```
 
-**With options:**
-```bash
-# Specify target directory
-curl -fsSL https://... | bash -s -- /path/to/project
-
-# CI mode (non-interactive)
-curl -fsSL https://... | bash -s -- --ci
-```
-
 <details>
 <summary>Alternative: Clone and install</summary>
 
 ```bash
 git clone https://github.com/yldgio/opencode-review /tmp/code-review
-cd /path/to/your/project
-/tmp/code-review/install.sh .
+/tmp/code-review/install.sh
 ```
 </details>
 
 ### Usage
 
+Navigate to any project and use the review agents:
+
 ```bash
+cd /path/to/your/project
+
+# Detect stack and install skills (optional but recommended)
+opencode run "@review-setup"
+
 # Review a file
 opencode run "@review-coordinator review src/api/users.ts"
 
@@ -61,6 +61,29 @@ git diff main...HEAD | opencode run "@review-coordinator review this diff"
 opencode
 # Then type: @review-coordinator review src/
 ```
+
+## How It Works
+
+```
+~/.config/opencode/          Your Project
+├── agents/                   (no files installed)
+│   ├── review-coordinator       │
+│   ├── review-frontend          │
+│   ├── review-backend           │
+│   ├── review-devops            │
+│   └── review-setup             │
+└── tools/                       │
+    └── install-skill            │
+                                 │
+         ┌───────────────────────┘
+         │ @review-setup creates (optional)
+         ▼
+   .opencode/rules/stack-context.md
+```
+
+1. **Install once** - Agents are installed globally to `~/.config/opencode/`
+2. **Run anywhere** - OpenCode loads global agents automatically in any project
+3. **Optional setup** - Run `@review-setup` to detect your stack and write `stack-context.md`
 
 ## Agents
 
@@ -80,51 +103,58 @@ opencode
 | Backend | FastAPI, NestJS, .NET |
 | DevOps | Docker, Terraform, Bicep, GitHub Actions, Azure DevOps |
 
-## How It Works
+## Project Files
 
-1. **Setup**: `@review-setup` scans your project and installs relevant skills
-2. **Review**: `@review-coordinator` analyzes code and delegates to specialists
-3. **Skills**: Each agent loads stack-specific rules for targeted feedback
+After running `@review-setup`, only **one file** is created in your project:
 
 ```
-@review-coordinator
-       │
-       ├── Loads stack-context.md (detected technologies)
-       ├── Loads relevant skills (nextjs, docker, etc.)
-       └── Delegates to specialized agents
-              │
-              ├── @review-frontend
-              ├── @review-backend
-              └── @review-devops
+your-project/
+└── .opencode/
+    └── rules/
+        └── stack-context.md   ← Detected stacks and notes
 ```
 
-## Configuration
-
-After installation, customize in `.opencode/`:
-
-- `rules/stack-context.md` - Detected stacks and notes
-- `opencode.json` - Permissions and settings
-
-See [docs/SETUP.md](docs/SETUP.md) for full documentation.
+This file is optional and can be:
+- Committed to your repo (recommended for team consistency)
+- Added to `.gitignore` if you prefer
+- Manually edited to add/remove stacks
 
 ## CI/CD Integration
 
 ### GitHub Actions
 
 ```yaml
-- name: Install code review agents
-  run: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash -s -- --ci
+- name: Install review agents
+  run: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash
 
-- name: Run code review
-  run: opencode run "@review-coordinator review src/" --ci
+- name: Setup and review
+  run: |
+    opencode run "@review-setup"
+    opencode run "@review-coordinator review src/"
 ```
 
 ### Azure DevOps
 
 ```yaml
-- script: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash -s -- --ci
-  displayName: 'Install code review agents'
+- script: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash
+  displayName: 'Install review agents'
+
+- script: opencode run "@review-coordinator review src/"
+  displayName: 'Run code review'
 ```
+
+## Uninstall
+
+Remove the agents from your global config:
+
+```bash
+rm ~/.config/opencode/agents/review-*.md
+rm ~/.config/opencode/tools/install-skill.ts
+```
+
+## Documentation
+
+See [docs/SETUP.md](docs/SETUP.md) for full documentation.
 
 ## Contributing
 

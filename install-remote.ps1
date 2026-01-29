@@ -1,19 +1,29 @@
 # Code Review Multi-Agent Remote Installer
+# Installs review agents globally to ~/.config/opencode/
 # Usage: irm https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.ps1 | iex
-# With args: & ([scriptblock]::Create((irm https://...))) -TargetDir "." -CI
+# With args: & ([scriptblock]::Create((irm https://...))) -Force
 
 param(
-    [string]$TargetDir = ".",
-    [switch]$CI
+    [switch]$Force,
+    [switch]$Help
 )
 
 $ErrorActionPreference = "Stop"
 
+if ($Help) {
+    Write-Host "Code Review Multi-Agent Installer" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "Usage: irm https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.ps1 | iex"
+    Write-Host ""
+    Write-Host "Options:"
+    Write-Host "  -Force    Overwrite existing files without prompting"
+    Write-Host "  -Help     Show this help message"
+    exit 0
+}
+
 $RepoUrl = "https://github.com/yldgio/opencode-review"
 $TempDir = Join-Path ([System.IO.Path]::GetTempPath()) ("opencode-review-" + [System.Guid]::NewGuid().ToString("N").Substring(0, 8))
 
-Write-Host "Code Review Multi-Agent Installer" -ForegroundColor Cyan
-Write-Host "==================================" -ForegroundColor Cyan
 Write-Host ""
 
 # Check for git
@@ -29,15 +39,12 @@ try {
     git clone --depth 1 --quiet $RepoUrl $TempDir
 
     # Run the installer
-    Write-Host "Installing to: $TargetDir"
-    Write-Host ""
-
     $InstallerPath = Join-Path $TempDir "install.ps1"
     
-    if ($CI) {
-        & $InstallerPath -TargetDir $TargetDir -CI
+    if ($Force) {
+        & $InstallerPath -Force
     } else {
-        & $InstallerPath -TargetDir $TargetDir
+        & $InstallerPath
     }
 }
 finally {

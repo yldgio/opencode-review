@@ -2,90 +2,103 @@
 set -e
 
 # Code Review Multi-Agent Installer
-# Usage: ./install.sh [target-directory] [--ci]
+# Installs review agents globally to ~/.config/opencode/
+# Usage: ./install.sh [--force]
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TARGET_DIR="${1:-.}"
-CI_MODE=""
+CONFIG_DIR="${OPENCODE_CONFIG_DIR:-$HOME/.config/opencode}"
+FORCE=""
 
 # Parse arguments
 for arg in "$@"; do
   case $arg in
-    --ci)
-      CI_MODE="--ci"
-      shift
+    --force|-f)
+      FORCE="true"
       ;;
-    *)
-      if [ -d "$arg" ]; then
-        TARGET_DIR="$arg"
-      fi
+    --help|-h)
+      echo "Code Review Multi-Agent Installer"
+      echo ""
+      echo "Installs review agents globally to ~/.config/opencode/"
+      echo ""
+      echo "Usage: ./install.sh [OPTIONS]"
+      echo ""
+      echo "Options:"
+      echo "  -f, --force    Overwrite existing files without prompting"
+      echo "  -h, --help     Show this help message"
+      echo ""
+      echo "After installation, run '@review-setup' in any project to detect its stack."
+      exit 0
       ;;
   esac
 done
 
-# Resolve target directory
-TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
+echo "Code Review Multi-Agent Installer"
+echo "=================================="
+echo ""
+echo "Installing to: $CONFIG_DIR"
+echo ""
 
-echo "Installing code review agents to: $TARGET_DIR"
+# Create config directory structure
+mkdir -p "$CONFIG_DIR/agents"
+mkdir -p "$CONFIG_DIR/tools"
 
-# Check if .opencode already exists
-if [ -d "$TARGET_DIR/.opencode" ]; then
-  echo "Warning: .opencode directory already exists in target"
-  if [ -z "$CI_MODE" ]; then
+# Check for existing agents
+EXISTING_AGENTS=""
+for agent in review-coordinator review-setup review-frontend review-backend review-devops; do
+  if [ -f "$CONFIG_DIR/agents/$agent.md" ]; then
+    EXISTING_AGENTS="$EXISTING_AGENTS $agent"
+  fi
+done
+
+if [ -n "$EXISTING_AGENTS" ]; then
+  echo "Warning: The following agents already exist:$EXISTING_AGENTS"
+  if [ -z "$FORCE" ]; then
     read -p "Overwrite? (y/N): " confirm
     if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
       echo "Aborted."
       exit 1
     fi
   else
-    echo "CI mode: overwriting existing configuration"
+    echo "Force mode: overwriting existing files"
   fi
 fi
 
-# Copy .opencode directory
-echo "Copying agent configuration..."
-cp -r "$SCRIPT_DIR/.opencode" "$TARGET_DIR/"
+# Copy agents
+echo "Installing review agents..."
+cp "$SCRIPT_DIR/.opencode/agent/review-coordinator.md" "$CONFIG_DIR/agents/"
+cp "$SCRIPT_DIR/.opencode/agent/review-setup.md" "$CONFIG_DIR/agents/"
+cp "$SCRIPT_DIR/.opencode/agent/review-frontend.md" "$CONFIG_DIR/agents/"
+cp "$SCRIPT_DIR/.opencode/agent/review-backend.md" "$CONFIG_DIR/agents/"
+cp "$SCRIPT_DIR/.opencode/agent/review-devops.md" "$CONFIG_DIR/agents/"
 
-# Remove development files (they're for this repo only)
-rm -rf "$TARGET_DIR/.opencode/node_modules" 2>/dev/null || true
-rm -f "$TARGET_DIR/.opencode/bun.lock" 2>/dev/null || true
-rm -f "$TARGET_DIR/.opencode/package.json" 2>/dev/null || true
-rm -f "$TARGET_DIR/.opencode/.gitignore" 2>/dev/null || true
-rm -rf "$TARGET_DIR/.opencode/commands" 2>/dev/null || true
-rm -f "$TARGET_DIR/.opencode/rules/implementation-session.md" 2>/dev/null || true
+echo "  - review-coordinator (main orchestrator)"
+echo "  - review-setup (stack detection)"
+echo "  - review-frontend (React, Vue, CSS)"
+echo "  - review-backend (APIs, databases)"
+echo "  - review-devops (Docker, CI/CD, IaC)"
 
-# Copy templates to correct locations
-echo "Setting up configuration templates..."
-mkdir -p "$TARGET_DIR/.opencode/rules"
-
-# Copy stack-context template (will be overwritten by review-setup)
-cp "$SCRIPT_DIR/templates/stack-context.md" "$TARGET_DIR/.opencode/rules/stack-context.md"
-
-# Copy opencode.json (target project config)
-cp "$SCRIPT_DIR/templates/opencode.json" "$TARGET_DIR/.opencode/opencode.json"
-
-echo "Configuration copied successfully."
-
-# Run stack detection
+# Copy custom tools
 echo ""
-echo "Running stack detection..."
+echo "Installing custom tools..."
+cp "$SCRIPT_DIR/.opencode/tools/install-skill.ts" "$CONFIG_DIR/tools/"
+echo "  - install-skill (skill installer)"
 
-cd "$TARGET_DIR"
-
-if command -v opencode &> /dev/null; then
-  if [ -n "$CI_MODE" ]; then
-    opencode run "@review-setup detect this project --ci"
-  else
-    opencode run "@review-setup detect this project"
-  fi
-else
-  echo "Warning: opencode CLI not found. Skipping stack detection."
-  echo "Install opencode and run: opencode run \"@review-setup detect this project\""
+# Check for bun/node for tools
+if ! command -v bun &> /dev/null && ! command -v node &> /dev/null; then
+  echo ""
+  echo "Warning: Neither bun nor node found. Custom tools require Node.js or Bun."
+  echo "Install Node.js from: https://nodejs.org/"
 fi
 
 echo ""
 echo "Installation complete!"
 echo ""
+echo "The review agents are now available globally in all your projects."
+echo ""
 echo "Next steps:"
-echo "  1. Review .opencode/rules/stack-context.md for detected stack"
-echo "  2. Run a code review with: opencode run \"@review-coordinator review <file>\""
+echo "  1. Navigate to a project: cd /path/to/your/project"
+echo "  2. Run stack detection: opencode run \"@review-setup\""
+echo "  3. Run a code review: opencode run \"@review-coordinator review <file>\""
+echo ""
+echo "Note: Stack detection will create .opencode/rules/stack-context.md in your project."
+echo "      This is the ONLY file added to your project (and it's optional)."
