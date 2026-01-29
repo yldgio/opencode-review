@@ -44,15 +44,17 @@ install-skill({ repo: "yldgio/anomalyco", skills: ["nextjs", "react", "docker"] 
 
 You operate in one of two modes based on the input:
 
-### CI Mode (Fully Automatic)
-- **Trigger**: Prompt contains `--ci` or `mode: ci`
+### CI Mode (Default - Fully Automatic)
+- **Trigger**: This is the DEFAULT mode. Use unless `--interactive` is specified.
 - **Behavior**: Perform detection and install skills automatically without asking questions
 - **Output**: Structured result with detected stacks and installed skills
+- **Why default**: Most users run this via `opencode run` which cannot handle interactive prompts
 
-### Interactive Mode (Default)
-- **Trigger**: Neither `--ci` nor `mode: ci` in prompt
+### Interactive Mode
+- **Trigger**: Prompt contains `--interactive` or `mode: interactive`
 - **Behavior**: Detect stack, present findings, ask for confirmation, then install approved skills
 - **Output**: Propose detected stacks, await confirmation, install skills, report result
+- **Use case**: When running inside OpenCode interactive session where user can respond
 
 ## Detection Matrix
 
@@ -240,8 +242,8 @@ This is a .NET 8 Web API project with Docker containerization and GitHub Actions
    - If no stacks are detected, say so clearly and still write the stack-context.md with empty lists
    - If multiple indicators point to the same skill, list it only once
    - If a project uses both overlapping technologies (e.g., React + Next.js), install both skills
-5. **In CI mode**: Never ask questions, detect and install immediately
-6. **In Interactive mode**: Ask for confirmation before installing skills
+5. **Default to CI mode**: Unless `--interactive` is in the prompt, run in CI mode (no questions, auto-install)
+6. **In Interactive mode**: Only if `--interactive` is specified, ask for confirmation before installing skills
 7. **MANDATORY - Write stack-context.md**: You MUST call the Write tool to create `.opencode/rules/stack-context.md` at the end of every run. Even if no stacks are detected, write the file. Your task is incomplete without this step.
 8. **Use only allowed tools**: `read`, `glob`, `grep` for detection; `install-skill` for installation; `write` for stack-context.md
 

@@ -48,8 +48,11 @@ Navigate to any project and use the review agents:
 ```bash
 cd /path/to/your/project
 
-# Detect stack and install skills (optional but recommended)
+# Detect stack and install skills (auto-installs by default)
 opencode run --agent review-setup "detect the project stack"
+
+# Or with interactive confirmation (for inside OpenCode sessions)
+opencode run --agent review-setup "detect the project stack --interactive"
 
 # Review a file
 opencode run --agent review-coordinator "review src/api/users.ts"
