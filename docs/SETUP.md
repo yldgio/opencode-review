@@ -12,18 +12,39 @@ A multi-agent code review system that automatically adapts to your project's tec
 
 ### Installation
 
-#### Option 1: Clone and Install
+#### Option 1: One-liner (Recommended)
+
+**Unix/macOS/WSL:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash
+```
+
+**Windows PowerShell:**
+```powershell
+irm https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.ps1 | iex
+```
+
+**With options:**
+```bash
+# Specify target directory
+curl -fsSL https://... | bash -s -- /path/to/project
+
+# CI mode (non-interactive)
+curl -fsSL https://... | bash -s -- --ci
+
+# Both
+curl -fsSL https://... | bash -s -- /path/to/project --ci
+```
+
+#### Option 2: Clone and Install
 
 ```bash
-# Clone this repository
 git clone https://github.com/yldgio/code-review-oc /tmp/code-review
-
-# Install into your project
 cd /path/to/your/project
 /tmp/code-review/install.sh .
 ```
 
-#### Option 2: Manual Copy
+#### Option 3: Manual Copy
 
 1. Copy the `.opencode/` folder to your project root
 2. Run stack detection:
@@ -69,6 +90,10 @@ The agent will:
 Non-interactive mode for automated pipelines.
 
 ```bash
+# One-liner
+curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash -s -- --ci
+
+# Or with local script
 ./install.sh /path/to/project --ci
 ```
 
@@ -98,9 +123,7 @@ jobs:
         run: npm install -g opencode-ai
       
       - name: Install code review agents
-        run: |
-          git clone https://github.com/yldgio/code-review-oc /tmp/code-review
-          /tmp/code-review/install.sh . --ci
+        run: curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash -s -- --ci
       
       - name: Run code review
         env:
@@ -130,9 +153,7 @@ steps:
   - script: npm install -g opencode-ai
     displayName: 'Install OpenCode'
   
-  - script: |
-      git clone https://github.com/yldgio/code-review-oc /tmp/code-review
-      /tmp/code-review/install.sh . --ci
+  - script: curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash -s -- --ci
     displayName: 'Install code review agents'
   
   - script: |

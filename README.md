@@ -19,12 +19,34 @@ A multi-agent code review system for [OpenCode](https://opencode.ai) that automa
 
 ### Installation
 
+**One-liner (Unix/macOS/WSL):**
 ```bash
-# Clone and install
+curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash
+```
+
+**One-liner (Windows PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.ps1 | iex
+```
+
+**With options:**
+```bash
+# Specify target directory
+curl -fsSL https://... | bash -s -- /path/to/project
+
+# CI mode (non-interactive)
+curl -fsSL https://... | bash -s -- --ci
+```
+
+<details>
+<summary>Alternative: Clone and install</summary>
+
+```bash
 git clone https://github.com/yldgio/code-review-oc /tmp/code-review
 cd /path/to/your/project
 /tmp/code-review/install.sh .
 ```
+</details>
 
 ### Usage
 
@@ -91,9 +113,7 @@ See [docs/SETUP.md](docs/SETUP.md) for full documentation.
 
 ```yaml
 - name: Install code review agents
-  run: |
-    git clone https://github.com/yldgio/code-review-oc /tmp/code-review
-    /tmp/code-review/install.sh . --ci
+  run: curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash -s -- --ci
 
 - name: Run code review
   run: opencode run "@review-coordinator review src/" --ci
@@ -102,9 +122,7 @@ See [docs/SETUP.md](docs/SETUP.md) for full documentation.
 ### Azure DevOps
 
 ```yaml
-- script: |
-    git clone https://github.com/yldgio/code-review-oc /tmp/code-review
-    /tmp/code-review/install.sh . --ci
+- script: curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash -s -- --ci
   displayName: 'Install code review agents'
 ```
 
