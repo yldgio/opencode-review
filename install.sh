@@ -26,7 +26,7 @@ for arg in "$@"; do
       echo "  -f, --force    Overwrite existing files without prompting"
       echo "  -h, --help     Show this help message"
       echo ""
-      echo "After installation, run '@review-setup' in any project to detect its stack."
+      echo "After installation, use: opencode run --agent review-setup \"detect the project stack\""
       exit 0
       ;;
   esac
@@ -97,8 +97,8 @@ echo "The review agents are now available globally in all your projects."
 echo ""
 echo "Next steps:"
 echo "  1. Navigate to a project: cd /path/to/your/project"
-echo "  2. Run stack detection: opencode run \"@review-setup\""
-echo "  3. Run a code review: opencode run \"@review-coordinator review <file>\""
+echo "  2. Run stack detection: opencode run --agent review-setup \"detect the project stack\""
+echo "  3. Run a code review: opencode run --agent review-coordinator \"review <file>\""
 echo ""
 echo "Note: Stack detection will create .opencode/rules/stack-context.md in your project."
 echo "      This is the ONLY file added to your project (and it's optional)."

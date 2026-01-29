@@ -76,13 +76,13 @@ Navigate to any project and use the review agents:
 cd /path/to/your/project
 
 # Run stack detection (optional but recommended)
-opencode run "@review-setup"
+opencode run --agent review-setup "detect the project stack"
 
 # Review a specific file
-opencode run "@review-coordinator review src/api/users.ts"
+opencode run --agent review-coordinator "review src/api/users.ts"
 
 # Review changes in a PR
-git diff main...HEAD | opencode run "@review-coordinator review this diff"
+git diff main...HEAD | opencode run --agent review-coordinator "review this diff"
 
 # Interactive mode
 opencode
@@ -241,7 +241,7 @@ Skills are specialized review rules for specific technologies. They're installed
 
 ```bash
 # Using the install-skill tool (via OpenCode)
-opencode run "@review-setup" # This installs skills automatically
+opencode run --agent review-setup "detect the project stack" # This installs skills automatically
 
 # Or manually via npx
 npx skills add https://github.com/yldgio/anomalyco --skill nextjs
@@ -270,12 +270,12 @@ jobs:
         run: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash
       
       - name: Detect stack
-        run: opencode run "@review-setup"
+        run: opencode run --agent review-setup "detect the project stack"
       
       - name: Review code
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: opencode run "@review-coordinator review src/"
+        run: opencode run --agent review-coordinator "review src/"
 ```
 
 ### Azure DevOps
@@ -296,7 +296,7 @@ steps:
   - script: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash
     displayName: 'Install review agents'
   
-  - script: opencode run "@review-coordinator review src/"
+  - script: opencode run --agent review-coordinator "review src/"
     displayName: 'Run code review'
 ```
 
@@ -358,7 +358,7 @@ export OPENCODE_CONFIG_DIR=/path/to/my/config
 
 1. Run detection manually:
    ```bash
-   opencode run "@review-setup"
+   opencode run --agent review-setup "detect the project stack"
    ```
 
 2. Check if your stack's indicator files exist (see detection matrix)

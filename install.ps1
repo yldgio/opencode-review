@@ -20,7 +20,7 @@ if ($Help) {
     Write-Host "  -Force    Overwrite existing files without prompting"
     Write-Host "  -Help     Show this help message"
     Write-Host ""
-    Write-Host "After installation, run '@review-setup' in any project to detect its stack."
+    Write-Host "After installation, use: opencode run --agent review-setup `"detect the project stack`""
     exit 0
 }
 
@@ -111,8 +111,8 @@ Write-Host "The review agents are now available globally in all your projects."
 Write-Host ""
 Write-Host "Next steps:"
 Write-Host "  1. Navigate to a project: cd C:\path\to\your\project"
-Write-Host "  2. Run stack detection: opencode run `"@review-setup`""
-Write-Host "  3. Run a code review: opencode run `"@review-coordinator review <file>`""
+Write-Host "  2. Run stack detection: opencode run --agent review-setup `"detect the project stack`""
+Write-Host "  3. Run a code review: opencode run --agent review-coordinator `"review <file>`""
 Write-Host ""
 Write-Host "Note: Stack detection will create .opencode\rules\stack-context.md in your project."
 Write-Host "      This is the ONLY file added to your project (and it's optional)."

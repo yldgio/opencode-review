@@ -49,13 +49,13 @@ Navigate to any project and use the review agents:
 cd /path/to/your/project
 
 # Detect stack and install skills (optional but recommended)
-opencode run "@review-setup"
+opencode run --agent review-setup "detect the project stack"
 
 # Review a file
-opencode run "@review-coordinator review src/api/users.ts"
+opencode run --agent review-coordinator "review src/api/users.ts"
 
 # Review a PR diff
-git diff main...HEAD | opencode run "@review-coordinator review this diff"
+git diff main...HEAD | opencode run --agent review-coordinator "review this diff"
 
 # Interactive mode
 opencode
@@ -129,8 +129,8 @@ This file is optional and can be:
 
 - name: Setup and review
   run: |
-    opencode run "@review-setup"
-    opencode run "@review-coordinator review src/"
+    opencode run --agent review-setup "detect the project stack"
+    opencode run --agent review-coordinator "review src/"
 ```
 
 ### Azure DevOps
@@ -139,7 +139,7 @@ This file is optional and can be:
 - script: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash
   displayName: 'Install review agents'
 
-- script: opencode run "@review-coordinator review src/"
+- script: opencode run --agent review-coordinator "review src/"
   displayName: 'Run code review'
 ```
 
