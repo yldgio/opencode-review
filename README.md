@@ -106,6 +106,26 @@ opencode
 | Backend | FastAPI, NestJS, .NET |
 | DevOps | Docker, Terraform, Bicep, GitHub Actions, Azure DevOps |
 
+## Skill Installation
+
+Skills are installed **globally by default** (`~/.config/opencode/rules/`) so they're shared across all projects.
+
+```bash
+# Automatic (global)
+opencode run --agent review-setup "detect the project stack"
+
+# Manual (global)
+npx skills add https://github.com/yldgio/anomalyco --skill nextjs -g -y
+
+# Manual (project-level, to .opencode/rules/)
+npx skills add https://github.com/yldgio/anomalyco --skill nextjs -y
+```
+
+For project-specific skills via the `install-skill` tool, use `projectLevel: true`:
+```
+install-skill({ repo: "yldgio/anomalyco", skills: ["nextjs"], projectLevel: true })
+```
+
 ## Project Files
 
 After running `@review-setup`, only **one file** is created in your project:

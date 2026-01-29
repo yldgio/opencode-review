@@ -239,13 +239,35 @@ Skills are specialized review rules for specific technologies. They're installed
 
 ### Manual Skill Installation
 
-```bash
-# Using the install-skill tool (via OpenCode)
-opencode run --agent review-setup "detect the project stack" # This installs skills automatically
+Skills can be installed globally (shared across projects) or at project level.
 
-# Or manually via npx
-npx skills add https://github.com/yldgio/anomalyco --skill nextjs
+```bash
+# Automatic detection and installation (global by default)
+opencode run --agent review-setup "detect the project stack"
+
+# Manual installation via npx (global)
+npx skills add https://github.com/yldgio/anomalyco --skill nextjs -g -y
+
+# Manual installation via npx (project-level)
+npx skills add https://github.com/yldgio/anomalyco --skill nextjs -y
 ```
+
+#### Using the install-skill tool directly
+
+When calling the `install-skill` tool from an agent or prompt:
+
+```
+# Global installation (default)
+install-skill({ repo: "yldgio/anomalyco", skills: ["nextjs", "react"] })
+
+# Project-level installation
+install-skill({ repo: "yldgio/anomalyco", skills: ["nextjs"], projectLevel: true })
+```
+
+| Scope | Location | Use case |
+|-------|----------|----------|
+| **Global** (default) | `~/.config/opencode/rules/` | Skills shared across all projects |
+| Project-level | `.opencode/rules/` | Project-specific skills |
 
 ---
 
