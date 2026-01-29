@@ -22,6 +22,7 @@ This plan defines the minimal MVP to install a multi-agent code review configura
 | 4 | Project rules/config for stack context | DONE | [issue-04-rules-config.md](issues/issue-04-rules-config.md) |
 | 5 | Minimal installer script | TODO | [issue-05-installer.md](issues/issue-05-installer.md) |
 | 6 | Documentation for adopters | TODO | [issue-06-documentation.md](issues/issue-06-documentation.md) |
+| 7 | Migrate skills to skills.sh registry | FUTURE | [issue-07-skills-registry.md](issues/issue-07-skills-registry.md) |
 
 ---
 
@@ -37,6 +38,8 @@ Issue 1 (setup agent)
                                     └──► Issue 5 (installer)
                                               │
                                               └──► Issue 6 (documentation)
+                                                        │
+                                                        └──► Issue 7 (skills.sh - FUTURE)
 ```
 
 **Execution Order:**
@@ -46,6 +49,7 @@ Issue 1 (setup agent)
 4. Issue 3 - Coordinator integration (depends on 2, 4)
 5. Issue 5 - Installer (depends on 1, 4)
 6. Issue 6 - Documentation (depends on all)
+7. Issue 7 - Skills.sh migration (FUTURE, post-MVP)
 
 ---
 
