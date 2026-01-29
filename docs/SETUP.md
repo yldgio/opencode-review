@@ -8,6 +8,7 @@ A multi-agent code review system that automatically adapts to your project's tec
 
 - [OpenCode CLI](https://opencode.ai) installed
 - A configured LLM provider (e.g., GitHub Copilot, Anthropic, OpenAI)
+- Node.js and npm (for installing skills)
 
 ### Installation
 
@@ -60,7 +61,8 @@ The agent will:
 1. Scan your project files
 2. Show detected technologies
 3. Ask you to confirm or modify the detection
-4. Generate the stack context file
+4. Install skills from remote repositories (e.g., `yldgio/anomalyco`)
+5. Generate the stack context file
 
 ### CI Mode
 
@@ -73,7 +75,8 @@ Non-interactive mode for automated pipelines.
 The agent will:
 1. Scan your project files
 2. Automatically select all detected stacks
-3. Generate the stack context file without prompts
+3. Install skills from remote repositories without prompts
+4. Generate the stack context file
 
 ---
 
@@ -155,6 +158,8 @@ You can edit this file to:
 
 ### Available Skills
 
+Skills are installed from remote repositories. The default source is [yldgio/anomalyco](https://github.com/yldgio/anomalyco).
+
 | Skill | Stack | Detection Pattern |
 |-------|-------|-------------------|
 | `nextjs` | Next.js | `next.config.*` |
@@ -164,9 +169,16 @@ You can edit this file to:
 | `nestjs` | NestJS | `package.json` with `@nestjs/*` |
 | `dotnet` | .NET | `*.csproj`, `*.sln` |
 | `docker` | Docker | `Dockerfile` |
+| `terraform` | Terraform | `*.tf` |
 | `github-actions` | GitHub Actions | `.github/workflows/*.yml` |
 | `azure-devops` | Azure DevOps | `azure-pipelines.yml` |
 | `bicep` | Bicep | `*.bicep` |
+
+Additional skills available:
+- `vercel-react-best-practices` - React/Next.js performance rules
+- `vercel-composition-patterns` - React composition patterns
+- `web-design-guidelines` - UI/UX accessibility audit rules
+- `webapp-testing` - Playwright testing patterns
 
 ---
 
@@ -251,8 +263,15 @@ Edit `.opencode/opencode.json`:
 ### Skills not loading
 
 1. Check `.opencode/rules/stack-context.md` exists and lists skills
-2. Verify skill files exist in `.opencode/skills/<name>/SKILL.md`
-3. Check `opencode.json` has `"skill": { "*": "allow" }`
+2. Verify Node.js and npm are installed (required for skill installation)
+3. Check skills were installed: `ls .opencode/skills/`
+4. Check `opencode.json` has `"skill": { "*": "allow" }`
+
+### Skill installation failed
+
+1. Ensure Node.js and npm are installed: `node --version && npm --version`
+2. Check network connectivity to GitHub
+3. Install skills manually: `npx skills add https://github.com/yldgio/anomalyco --skill <name>`
 
 ### Stack not detected
 

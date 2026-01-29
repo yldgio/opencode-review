@@ -32,7 +32,7 @@ All commits MUST follow [Conventional Commits](https://www.conventionalcommits.o
 | Scope | Description |
 |-------|-------------|
 | `agent` | Changes to `.opencode/agent/*.md` |
-| `skill` | Changes to `.opencode/skills/*` |
+| `tools` | Changes to `.opencode/tools/*` |
 | `rules` | Changes to `.opencode/rules/*` |
 | `config` | Changes to `.opencode/opencode.json` |
 | `installer` | Changes to `install.sh`, `install.ps1` |
@@ -41,7 +41,7 @@ All commits MUST follow [Conventional Commits](https://www.conventionalcommits.o
 **Examples:**
 ```
 feat(agent): add review-setup agent for stack detection
-feat(skill): add nextjs skill with App Router rules
+feat(tools): add install-skill custom tool
 fix(agent): correct detection pattern for Angular projects
 docs(docs): add SETUP.md with installation instructions
 chore(config): update opencode.json with skill permissions
@@ -60,13 +60,10 @@ Each completed **issue or sub-issue** MUST result in a commit:
 
 **Commit workflow:**
 ```bash
-# After completing issue 2.1 (nextjs skill)
-git add .opencode/skills/nextjs/SKILL.md
+# After completing a feature
+git add .opencode/tools/install-skill.ts
 git add docs/IMPLEMENTATION_PLAN.md
-git add docs/issues/issue-02-skills.md
-git commit -m "feat(skill): add nextjs skill with App Router rules
-
-Closes sub-issue 2.1"
+git commit -m "feat(tools): add install-skill custom tool"
 ```
 
 ---
@@ -146,12 +143,12 @@ Closes sub-issue 2.1"
   - Rules/constraints last
 - Use `hidden: true` for sub-agents not user-invokable
 
-### OpenCode Skills
+### OpenCode Custom Tools
 
-- Folder name MUST match `name` in frontmatter
-- Name format: lowercase alphanumeric with hyphens only
-- Description: specific enough for agent to choose correctly
-- Content: actionable checklists, not vague guidelines
+- Use TypeScript with `@opencode-ai/plugin` imports
+- Keep tools focused on single responsibility
+- Validate dependencies before executing commands
+- Return clear success/error messages
 
 ### OpenCode Config (opencode.json)
 
