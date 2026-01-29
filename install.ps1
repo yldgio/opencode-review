@@ -9,6 +9,12 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# Detect if running via pipe (irm | iex) - in this case, force overwrite
+$IsPiped = $MyInvocation.MyCommand.Path -eq $null
+if ($IsPiped) {
+    $Force = $true
+}
+
 if ($Help) {
     Write-Host "Code Review Multi-Agent Installer" -ForegroundColor Cyan
     Write-Host ""

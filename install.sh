@@ -9,6 +9,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_DIR="${OPENCODE_CONFIG_DIR:-$HOME/.config/opencode}"
 FORCE=""
 
+# Detect if running via pipe (stdin is not a terminal)
+if [ ! -t 0 ]; then
+  FORCE="true"
+fi
+
 # Parse arguments
 for arg in "$@"; do
   case $arg in
