@@ -17,7 +17,7 @@ This plan defines the minimal MVP to install a multi-agent code review configura
 | Issue | Title | Status | Details |
 |-------|-------|--------|---------|
 | 1 | Create setup agent for stack detection | DONE | [issue-01-setup-agent.md](issues/issue-01-setup-agent.md) |
-| 2 | Add stack-specific skills (MVP set) | TODO | [issue-02-skills.md](issues/issue-02-skills.md) |
+| 2 | Add stack-specific skills (MVP set) | DONE | [issue-02-skills.md](issues/issue-02-skills.md) |
 | 3 | Coordinator integrates stack skills | TODO | [issue-03-coordinator-integration.md](issues/issue-03-coordinator-integration.md) |
 | 4 | Project rules/config for stack context | TODO | [issue-04-rules-config.md](issues/issue-04-rules-config.md) |
 | 5 | Minimal installer script | TODO | [issue-05-installer.md](issues/issue-05-installer.md) |
@@ -60,16 +60,16 @@ Issue 1 (setup agent)
 ### Skills (`.opencode/skills/`)
 | File | Issue | Status |
 |------|-------|--------|
-| `nextjs/SKILL.md` | 2.1 | TODO |
-| `react/SKILL.md` | 2.2 | TODO |
-| `angular/SKILL.md` | 2.3 | TODO |
-| `fastapi/SKILL.md` | 2.4 | TODO |
-| `nestjs/SKILL.md` | 2.5 | TODO |
-| `dotnet/SKILL.md` | 2.6 | TODO |
-| `docker/SKILL.md` | 2.7 | TODO |
-| `github-actions/SKILL.md` | 2.8 | TODO |
-| `azure-devops/SKILL.md` | 2.9 | TODO |
-| `bicep/SKILL.md` | 2.10 | TODO |
+| `nextjs/SKILL.md` | 2.1 | DONE |
+| `react/SKILL.md` | 2.2 | DONE |
+| `angular/SKILL.md` | 2.3 | DONE |
+| `fastapi/SKILL.md` | 2.4 | DONE |
+| `nestjs/SKILL.md` | 2.5 | DONE |
+| `dotnet/SKILL.md` | 2.6 | DONE |
+| `docker/SKILL.md` | 2.7 | DONE |
+| `github-actions/SKILL.md` | 2.8 | DONE |
+| `azure-devops/SKILL.md` | 2.9 | DONE |
+| `bicep/SKILL.md` | 2.10 | DONE |
 
 ### Rules/Config (`.opencode/`)
 | File | Issue | Status |
