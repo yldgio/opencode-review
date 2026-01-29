@@ -111,8 +111,11 @@ opencode
 Skills are installed **globally by default** (`~/.config/opencode/rules/`) so they're shared across all projects.
 
 ```bash
-# Automatic (global)
+# Automatic (global - default)
 opencode run --agent review-setup "detect the project stack"
+
+# Automatic (project-level, to .opencode/rules/)
+opencode run --agent review-setup "detect the project stack --project"
 
 # Manual (global)
 npx skills add https://github.com/yldgio/anomalyco --skill nextjs -g -y

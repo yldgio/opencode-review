@@ -63,6 +63,22 @@ You operate in one of two modes based on the input:
 - **Output**: Propose detected stacks, await confirmation, install skills, report result
 - **Use case**: When running inside OpenCode interactive session where user can respond
 
+## Installation Scope
+
+By default, skills are installed **globally**. Check the prompt for scope flags:
+
+### Global (Default)
+- **Trigger**: No `--project` flag in prompt
+- **Behavior**: Install skills with `install-skill({ ..., projectLevel: false })` (or omit the parameter)
+- **Location**: `~/.config/opencode/rules/`
+- **Use case**: Skills shared across all projects
+
+### Project-Level
+- **Trigger**: Prompt contains `--project` or `scope: project`
+- **Behavior**: Install skills with `install-skill({ ..., projectLevel: true })`
+- **Location**: `.opencode/rules/` in the current project
+- **Use case**: Project-specific skills that should be versioned with the codebase
+
 ## Detection Matrix
 
 Use the following table to map file patterns to technology stacks and skills:
