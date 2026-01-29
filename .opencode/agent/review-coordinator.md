@@ -2,7 +2,6 @@
 description: Multi agent code review coordinator
 mode: primary
 temperature: 0.2
-model: github-copilot/claude-sonnet-4.5
 tools:
   edit: false
   write: false

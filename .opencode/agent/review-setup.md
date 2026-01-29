@@ -1,7 +1,6 @@
 ---
 description: "Detects project stack, writes stack-context.md, and installs skills for code review"
 mode: primary
-model: github-copilot/claude-haiku-4.5
 temperature: 0.1
 tools:
   edit: false

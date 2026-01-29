@@ -2,7 +2,6 @@
 description: "Backend code review specialist"
 mode: subagent
 hidden: true
-model: github-copilot/claude-sonnet-4.5
 temperature: 0.1
 tools:
   edit: false
