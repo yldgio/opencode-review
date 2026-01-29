@@ -147,9 +147,16 @@ This file is optional and can be:
 
 Remove the agents from your global config:
 
+**Unix/macOS/WSL:**
 ```bash
 rm ~/.config/opencode/agents/review-*.md
 rm ~/.config/opencode/tools/install-skill.ts
+```
+
+**Windows PowerShell:**
+```powershell
+Remove-Item $env:USERPROFILE\.config\opencode\agents\review-*.md
+Remove-Item $env:USERPROFILE\.config\opencode\tools\install-skill.ts
 ```
 
 ## Documentation
