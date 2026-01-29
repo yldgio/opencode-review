@@ -1,5 +1,5 @@
 # Code Review Multi-Agent Remote Installer
-# Usage: irm https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.ps1 | iex
+# Usage: irm https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.ps1 | iex
 # With args: & ([scriptblock]::Create((irm https://...))) -TargetDir "." -CI
 
 param(
@@ -9,8 +9,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$RepoUrl = "https://github.com/yldgio/code-review-oc"
-$TempDir = Join-Path ([System.IO.Path]::GetTempPath()) ("code-review-oc-" + [System.Guid]::NewGuid().ToString("N").Substring(0, 8))
+$RepoUrl = "https://github.com/yldgio/opencode-review"
+$TempDir = Join-Path ([System.IO.Path]::GetTempPath()) ("opencode-review-" + [System.Guid]::NewGuid().ToString("N").Substring(0, 8))
 
 Write-Host "Code Review Multi-Agent Installer" -ForegroundColor Cyan
 Write-Host "==================================" -ForegroundColor Cyan
@@ -25,7 +25,7 @@ if (-not $GitExists) {
 
 try {
     # Clone repository
-    Write-Host "Downloading code-review-oc..."
+    Write-Host "Downloading opencode-review..."
     git clone --depth 1 --quiet $RepoUrl $TempDir
 
     # Run the installer

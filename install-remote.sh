@@ -2,10 +2,10 @@
 set -e
 
 # Code Review Multi-Agent Remote Installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash
 # With args: curl -fsSL ... | bash -s -- [target-dir] [--ci]
 
-REPO_URL="https://github.com/yldgio/code-review-oc"
+REPO_URL="https://github.com/yldgio/opencode-review"
 TEMP_DIR=$(mktemp -d)
 TARGET_DIR="${1:-.}"
 CI_FLAG=""
@@ -41,15 +41,15 @@ if ! command -v git &> /dev/null; then
 fi
 
 # Clone repository
-echo "Downloading code-review-oc..."
-git clone --depth 1 --quiet "$REPO_URL" "$TEMP_DIR/code-review-oc"
+echo "Downloading opencode-review..."
+git clone --depth 1 --quiet "$REPO_URL" "$TEMP_DIR/opencode-review"
 
 # Run the installer
 echo "Installing to: $TARGET_DIR"
 echo ""
 
 if [ -n "$CI_FLAG" ]; then
-  bash "$TEMP_DIR/code-review-oc/install.sh" "$TARGET_DIR" --ci
+  bash "$TEMP_DIR/opencode-review/install.sh" "$TARGET_DIR" --ci
 else
-  bash "$TEMP_DIR/code-review-oc/install.sh" "$TARGET_DIR"
+  bash "$TEMP_DIR/opencode-review/install.sh" "$TARGET_DIR"
 fi

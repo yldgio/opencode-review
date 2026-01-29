@@ -16,12 +16,12 @@ A multi-agent code review system that automatically adapts to your project's tec
 
 **Unix/macOS/WSL:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash
+curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash
 ```
 
 **Windows PowerShell:**
 ```powershell
-irm https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.ps1 | iex
+irm https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.ps1 | iex
 ```
 
 **With options:**
@@ -39,7 +39,7 @@ curl -fsSL https://... | bash -s -- /path/to/project --ci
 #### Option 2: Clone and Install
 
 ```bash
-git clone https://github.com/yldgio/code-review-oc /tmp/code-review
+git clone https://github.com/yldgio/opencode-review /tmp/code-review
 cd /path/to/your/project
 /tmp/code-review/install.sh .
 ```
@@ -91,7 +91,7 @@ Non-interactive mode for automated pipelines.
 
 ```bash
 # One-liner
-curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash -s -- --ci
+curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash -s -- --ci
 
 # Or with local script
 ./install.sh /path/to/project --ci
@@ -123,7 +123,7 @@ jobs:
         run: npm install -g opencode-ai
       
       - name: Install code review agents
-        run: curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash -s -- --ci
+        run: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash -s -- --ci
       
       - name: Run code review
         env:
@@ -153,7 +153,7 @@ steps:
   - script: npm install -g opencode-ai
     displayName: 'Install OpenCode'
   
-  - script: curl -fsSL https://raw.githubusercontent.com/yldgio/code-review-oc/main/install-remote.sh | bash -s -- --ci
+  - script: curl -fsSL https://raw.githubusercontent.com/yldgio/opencode-review/main/install-remote.sh | bash -s -- --ci
     displayName: 'Install code review agents'
   
   - script: |

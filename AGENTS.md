@@ -5,7 +5,7 @@ Guidelines for AI agents working on this repository.
 ## Project Structure
 
 ```
-code-review-oc/
+opencode-review/
 ├── .opencode/
 │   ├── agent/           # Review agents (Markdown)
 │   ├── tools/           # Custom tools (TypeScript)
