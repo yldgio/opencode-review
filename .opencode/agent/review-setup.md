@@ -51,6 +51,7 @@ Use the following table to map file patterns to technology stacks and skills:
 | `.github/workflows/*.yml` | GitHub Actions | `github-actions` |
 | `azure-pipelines.yml` | Azure DevOps | `azure-devops` |
 | `*.bicep` or `bicepconfig.json` | Bicep | `bicep` |
+| `terraform.tf` or `*.tf` | Terraform | `terraform` |
 
 ## Detection Algorithm
 
@@ -58,7 +59,7 @@ Follow these steps to detect the project stack:
 
 1. **Scan for indicator files** using the Glob tool:
    - Look for configuration files like `next.config.*`, `angular.json`, `Dockerfile`, etc.
-   - Look for project files like `*.csproj`, `*.sln`, `*.bicep`
+   - Look for project files like `*.csproj`, `*.sln`, `*.bicep`, `*.tf`
    - Look for CI/CD files in `.github/workflows/*.yml`, `azure-pipelines.yml`
 
 2. **Check package manifests** for specific dependencies:
