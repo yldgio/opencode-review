@@ -71,11 +71,11 @@ Issue 1 (setup agent)
 | `azure-devops/SKILL.md` | 2.9 | DONE |
 | `bicep/SKILL.md` | 2.10 | DONE |
 
-### Rules/Config (`.opencode/`)
+### Templates (`templates/`)
 | File | Issue | Status |
 |------|-------|--------|
-| `rules/stack-context.md` | 4.1 | TODO |
-| `opencode.json` | 4.2 | TODO |
+| `stack-context.md` | 4.1 | DONE |
+| `opencode.json` | 4.2 | DONE |
 
 ### Scripts (root)
 | File | Issue | Status |

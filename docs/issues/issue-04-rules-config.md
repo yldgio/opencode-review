@@ -87,10 +87,12 @@ Generated: 2025-01-29T10:00:00Z
    - Coordinator parses this section to determine which skills to load
 
 **Acceptance Criteria:**
-- [ ] Template file exists at `.opencode/rules/stack-context.md`
-- [ ] Format is parseable (bullet list under specific heading)
-- [ ] Template includes placeholder sections for stacks, skills, timestamp
-- [ ] Comments explain the purpose and that it's auto-generated
+- [x] Template file exists at `templates/stack-context.md`
+- [x] Format is parseable (bullet list under specific heading)
+- [x] Template includes placeholder sections for stacks, skills, timestamp
+- [x] Comments explain the purpose and that it's auto-generated
+
+**Note:** Template is stored in `templates/` directory. The installer (Issue 5) will copy it to `.opencode/rules/stack-context.md` in the target project.
 
 ---
 
@@ -143,10 +145,12 @@ Ensure OpenCode loads the stack context rules automatically when starting a sess
 ```
 
 **Acceptance Criteria:**
-- [ ] File exists at `.opencode/opencode.json`
-- [ ] Valid JSON with `$schema` reference
-- [ ] `instructions` array includes stack context file path
-- [ ] Skill permissions configured to allow loading
+- [x] File exists at `templates/opencode.json`
+- [x] Valid JSON with `$schema` reference
+- [x] `instructions` array includes stack context file path
+- [x] Skill permissions configured to allow loading
+
+**Note:** Template is stored in `templates/` directory. The installer (Issue 5) will copy it to `.opencode/opencode.json` in the target project.
 
 ---
 
@@ -154,8 +158,8 @@ Ensure OpenCode loads the stack context rules automatically when starting a sess
 
 | File | Action |
 |------|--------|
-| `.opencode/rules/stack-context.md` | CREATE (template) |
-| `.opencode/opencode.json` | CREATE |
+| `templates/stack-context.md` | CREATE (template for target projects) |
+| `templates/opencode.json` | CREATE (config template for target projects) |
 
 ---
 
