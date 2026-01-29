@@ -19,7 +19,7 @@ This plan defines the minimal MVP to install a multi-agent code review configura
 | 1 | Create setup agent for stack detection | DONE | [issue-01-setup-agent.md](issues/issue-01-setup-agent.md) |
 | 2 | Add stack-specific skills (MVP set) | DONE | [issue-02-skills.md](issues/issue-02-skills.md) |
 | 3 | Coordinator integrates stack skills | TODO | [issue-03-coordinator-integration.md](issues/issue-03-coordinator-integration.md) |
-| 4 | Project rules/config for stack context | TODO | [issue-04-rules-config.md](issues/issue-04-rules-config.md) |
+| 4 | Project rules/config for stack context | DONE | [issue-04-rules-config.md](issues/issue-04-rules-config.md) |
 | 5 | Minimal installer script | TODO | [issue-05-installer.md](issues/issue-05-installer.md) |
 | 6 | Documentation for adopters | TODO | [issue-06-documentation.md](issues/issue-06-documentation.md) |
 
