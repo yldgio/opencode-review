@@ -16,7 +16,7 @@ A multi-agent code review system that automatically adapts to your project's tec
 
 ```bash
 # Clone this repository
-git clone https://github.com/your-org/code-review-oc /tmp/code-review
+git clone https://github.com/yldgio/code-review-oc /tmp/code-review
 
 # Install into your project
 cd /path/to/your/project
@@ -99,7 +99,7 @@ jobs:
       
       - name: Install code review agents
         run: |
-          git clone https://github.com/your-org/code-review-oc /tmp/code-review
+          git clone https://github.com/yldgio/code-review-oc /tmp/code-review
           /tmp/code-review/install.sh . --ci
       
       - name: Run code review
@@ -131,7 +131,7 @@ steps:
     displayName: 'Install OpenCode'
   
   - script: |
-      git clone https://github.com/your-org/code-review-oc /tmp/code-review
+      git clone https://github.com/yldgio/code-review-oc /tmp/code-review
       /tmp/code-review/install.sh . --ci
     displayName: 'Install code review agents'
   
@@ -282,3 +282,137 @@ Edit `.opencode/opencode.json`:
 ### Agent not found
 
 Ensure `.opencode/agent/` contains the agent files and OpenCode is run from the project root.
+
+---
+
+## Architecture
+
+### System Overview
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         User Project                            │
+├─────────────────────────────────────────────────────────────────┤
+│  .opencode/                                                     │
+│  ├── agent/                    ← Review agents                  │
+│  │   ├── review-coordinator.md                                  │
+│  │   ├── review-frontend.md                                     │
+│  │   ├── review-backend.md                                      │
+│  │   ├── review-devops.md                                       │
+│  │   └── review-setup.md                                        │
+│  ├── tools/                    ← Custom tools                   │
+│  │   └── install-skill.ts                                       │
+│  ├── rules/                    ← Project context                │
+│  │   └── stack-context.md                                       │
+│  ├── skills/                   ← Installed skills (from remote) │
+│  │   ├── nextjs/SKILL.md                                        │
+│  │   ├── react/SKILL.md                                         │
+│  │   └── ...                                                    │
+│  └── opencode.json             ← Configuration                  │
+└─────────────────────────────────────────────────────────────────┘
+                                 │
+                                 │ install-skill tool
+                                 ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Skills Repository                            │
+│                 github.com/yldgio/anomalyco                     │
+├─────────────────────────────────────────────────────────────────┤
+│  skills/                                                        │
+│  ├── nextjs/SKILL.md                                            │
+│  ├── react/SKILL.md                                             │
+│  ├── docker/SKILL.md                                            │
+│  └── ... (15 skills)                                            │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Agent Flow
+
+```
+User: @review-coordinator review src/api/users.ts
+                │
+                ▼
+┌───────────────────────────┐
+│   review-coordinator      │
+│   (Primary orchestrator)  │
+├───────────────────────────┤
+│ 1. Load stack-context.md  │
+│ 2. Load relevant skills   │
+│ 3. Analyze code type      │
+│ 4. Delegate to sub-agent  │
+└───────────────────────────┘
+                │
+       ┌────────┼────────┐
+       ▼        ▼        ▼
+┌──────────┐ ┌──────────┐ ┌──────────┐
+│ frontend │ │ backend  │ │ devops   │
+│  agent   │ │  agent   │ │  agent   │
+└──────────┘ └──────────┘ └──────────┘
+```
+
+### Setup Flow
+
+```
+User: @review-setup detect this project
+                │
+                ▼
+┌───────────────────────────┐
+│      review-setup         │
+├───────────────────────────┤
+│ 1. Glob for config files  │
+│ 2. Read package manifests │
+│ 3. Match detection matrix │
+│ 4. (Interactive) Confirm  │
+└───────────────────────────┘
+                │
+                ▼
+┌───────────────────────────┐
+│    install-skill tool     │
+├───────────────────────────┤
+│ 1. Check Node.js/npm      │
+│ 2. npx skills add ...     │
+│ 3. Report result          │
+└───────────────────────────┘
+                │
+                ▼
+┌───────────────────────────┐
+│  Skills installed to      │
+│  .opencode/skills/        │
+└───────────────────────────┘
+```
+
+### Custom Tool: install-skill
+
+**Location**: `.opencode/tools/install-skill.ts`
+
+**Purpose**: Install skills from GitHub repositories with dependency checking.
+
+**Arguments**:
+
+| Argument | Type | Description |
+|----------|------|-------------|
+| `repo` | string | GitHub repo (`owner/repo` or full URL) |
+| `skills` | string \| string[] | Skill name(s) to install |
+
+**Example**:
+```typescript
+install-skill({
+  repo: "yldgio/anomalyco",
+  skills: ["nextjs", "react", "docker"]
+})
+```
+
+**Behavior**:
+1. Checks Node.js is installed
+2. Checks npm is installed
+3. Normalizes repo to full URL if shorthand provided
+4. Runs `npx skills add <url> --skill <name>` for each skill
+5. Returns success/failure per skill
+
+### Skill Sources
+
+| Repository | Description |
+|------------|-------------|
+| [yldgio/anomalyco](https://github.com/yldgio/anomalyco) | Curated skills (15 skills) |
+| [github/awesome-copilot](https://github.com/github/awesome-copilot) | Community skills (optional) |
+
+Skills can be installed from any repository that follows the `skills/<name>/SKILL.md` structure.
