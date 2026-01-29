@@ -35,10 +35,17 @@ Install skills from these repositories (in order of preference):
 | `yldgio/anomalyco` | Curated skills for common stacks (Next.js, React, FastAPI, Docker, etc.) |
 | `github/awesome-copilot` | Community-contributed skills |
 
-Use the `install-skill` tool to install skills. Example:
+Use the `install-skill` tool to install skills:
+
 ```
+# Global installation (default - shared across all projects)
 install-skill({ repo: "yldgio/anomalyco", skills: ["nextjs", "react", "docker"] })
+
+# Project-level installation (specific to current project)
+install-skill({ repo: "yldgio/anomalyco", skills: ["nextjs"], projectLevel: true })
 ```
+
+**Default behavior:** Skills are installed globally to `~/.config/opencode/rules/` so they're available in all projects.
 
 ## Operational Modes
 
