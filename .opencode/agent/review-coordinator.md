@@ -1,6 +1,7 @@
 ---
 description: Multi agent code review coordinator
 mode: primary
+model: opencode/gpt-5-nano
 temperature: 0.2
 tools:
   edit: false

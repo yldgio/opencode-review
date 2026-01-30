@@ -1,6 +1,7 @@
 ---
 description: "Detects project stack, writes stack-context.md, and installs skills for code review"
 mode: primary
+model: opencode/gpt-5-nano
 temperature: 0.1
 tools:
   edit: false

@@ -429,6 +429,67 @@ steps:
 
 ## Customization
 
+### Changing the Model
+
+By default, all review agents use `opencode/gpt-5-nano` (free, fast). You can override this in several ways:
+
+#### Option 1: Project-level override (recommended)
+
+Create `opencode.json` in your project root:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "review-coordinator": { "model": "opencode/claude-sonnet-4" },
+    "review-frontend": { "model": "opencode/claude-sonnet-4" },
+    "review-backend": { "model": "opencode/claude-sonnet-4" },
+    "review-devops": { "model": "opencode/claude-sonnet-4" },
+    "review-docs": { "model": "opencode/claude-sonnet-4" },
+    "review-setup": { "model": "opencode/claude-sonnet-4" }
+  }
+}
+```
+
+You can copy `opencode.example.json` from this repo as a starting point.
+
+#### Option 2: CI/CD with environment variable
+
+Use `OPENCODE_CONFIG_CONTENT` for runtime override:
+
+```yaml
+# GitHub Actions example
+env:
+  OPENCODE_CONFIG_CONTENT: |
+    {
+      "agent": {
+        "review-coordinator": { "model": "opencode/gpt-5-nano" },
+        "review-frontend": { "model": "opencode/gpt-5-nano" },
+        "review-backend": { "model": "opencode/gpt-5-nano" },
+        "review-devops": { "model": "opencode/gpt-5-nano" }
+      }
+    }
+```
+
+#### Option 3: Edit global agents directly
+
+Modify the agents in `~/.config/opencode/agents/`:
+
+```bash
+# Change model for all review agents
+sed -i 's/model: opencode\/gpt-5-nano/model: opencode\/claude-sonnet-4/' ~/.config/opencode/agents/review-*.md
+```
+
+#### Recommended Models
+
+| Model | Speed | Cost | Best for |
+|-------|-------|------|----------|
+| `opencode/gpt-5-nano` | Fast | Free | Quick reviews, CI/CD |
+| `opencode/kimi-k2.5-free` | Fast | Free | Alternative free option |
+| `opencode/glm-4.7-free` | Fast | Free | Alternative free option |
+| `opencode/claude-sonnet-4` | Medium | Paid | Thorough reviews |
+| `opencode/claude-opus-4-5` | Slow | Paid | Deep analysis |
+
 ### Adding Custom Rules
 
 Create rule files in your project:

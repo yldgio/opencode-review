@@ -2,6 +2,7 @@
 description: "Frontend code review specialist"
 mode: subagent
 hidden: true
+model: opencode/gpt-5-nano
 temperature: 0.1
 tools:
   edit: false

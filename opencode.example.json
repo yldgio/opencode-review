@@ -1,0 +1,23 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "review-coordinator": {
+      "model": "opencode/claude-sonnet-4"
+    },
+    "review-frontend": {
+      "model": "opencode/claude-sonnet-4"
+    },
+    "review-backend": {
+      "model": "opencode/claude-sonnet-4"
+    },
+    "review-devops": {
+      "model": "opencode/claude-sonnet-4"
+    },
+    "review-docs": {
+      "model": "opencode/claude-sonnet-4"
+    },
+    "review-setup": {
+      "model": "opencode/claude-sonnet-4"
+    }
+  }
+}
