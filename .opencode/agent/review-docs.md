@@ -133,7 +133,7 @@ ACTION ITEMS:
 Only propose learnings that meet these criteria:
 
 1. **Actionable** — Can be turned into a clear guideline
-2. **General** — Applies beyond the specific code being reviewed  
+2. **General** — Applies beyond the specific code being reviewed
 3. **Valuable** — Would prevent bugs, improve consistency, or save time
 4. **Not Already Documented** — Verify it's not already covered
 5. **Stable** — Unlikely to change frequently

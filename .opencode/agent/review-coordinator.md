@@ -82,15 +82,13 @@ After receiving sub-agent reports, create a unified summary:
    - **Minor:** Style issues, suggestions, nice-to-haves
 
 2. **Documentation Learnings** (from review-docs)
-   - Include any proposed learnings for `AGENTS.md` or `.github/copilot-instructions.md`
+   - Include any proposed learnings with specific suggested text for `AGENTS.md` or `.github/copilot-instructions.md`
    - Note documentation discrepancies that need addressing
    - Highlight actionable guidelines discovered during review
 
 3. **Verdict:** `APPROVE`, `REQUEST CHANGES`, or `NEEDS DISCUSSION`
 
 4. **Action Items:** Numbered list of required changes before approval
-
-5. **Proposed Documentation Updates:** If learnings were identified, include specific suggestions for `AGENTS.md` or `.github/copilot-instructions.md`
 
 ## Rules
 - Reference code by `file:line` format when possible
