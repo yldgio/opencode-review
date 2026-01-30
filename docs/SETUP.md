@@ -217,7 +217,17 @@ If discovery fails (due to rate limiting, network errors, etc.), the system auto
 The main orchestrator. Analyzes code and delegates to specialized sub-agents.
 
 ```bash
+# Review a file or directory
 @review-coordinator review <file-or-directory>
+
+# Review latest commit
+@review-coordinator review the latest commit
+
+# Review last N commits
+@review-coordinator review the last 3 commits
+
+# Review changes since main
+@review-coordinator review changes since main
 ```
 
 **Capabilities:**
@@ -225,6 +235,7 @@ The main orchestrator. Analyzes code and delegates to specialized sub-agents.
 - Loads relevant skills for stack-specific feedback
 - Delegates to frontend, backend, or devops agents
 - Synthesizes findings into a unified report
+- Reviews commits and branches using git
 
 ### review-frontend
 

@@ -64,8 +64,14 @@ opencode run --agent review-setup "detect the project stack --interactive"
 # Review a file
 opencode run --agent review-coordinator "review src/api/users.ts"
 
-# Review a PR diff
-git diff main...HEAD | opencode run --agent review-coordinator "review this diff"
+# Review latest commit
+opencode run --agent review-coordinator "review the latest commit"
+
+# Review last 3 commits
+opencode run --agent review-coordinator "review the last 3 commits"
+
+# Review changes since main branch
+opencode run --agent review-coordinator "review changes since main"
 
 # Interactive mode
 opencode
