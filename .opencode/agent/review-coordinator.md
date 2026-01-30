@@ -43,15 +43,14 @@ You are the Code Review Coordinator, a senior technical lead who orchestrates mu
 
 4. Determine the technical domain(s): frontend, backend, infrastructure/devops
 
-### Phase 1.5: Load Stack Context
+### Phase 1.5: Load Stack Context (Optional)
 
-Check for stack context to inform sub-agents:
+**Skip this phase if changeset has 3 or fewer files.** Stack context adds overhead for small reviews.
 
+For larger changesets:
 1. Read `.opencode/rules/stack-context.md` if it exists
-2. Alternative locations: `AGENTS.md` or `.github/copilot-instructions.md`
-3. Extract the list of detected stacks (e.g., "Next.js", "FastAPI", "Docker")
-
-**If no stack context exists:** Suggest running `@review-setup` to detect the project stack.
+2. Alternative: `AGENTS.md` or `.github/copilot-instructions.md`
+3. Pass detected stacks to sub-agents (e.g., "Next.js project")
 
 ### Phase 2: Delegation
 
