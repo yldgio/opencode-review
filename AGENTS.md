@@ -97,6 +97,7 @@ export default tool({
 |------|---------|
 | `.opencode/agent/review-coordinator.md` | Main orchestrator |
 | `.opencode/agent/review-setup.md` | Stack detection, writes stack-context.md |
+| `.opencode/agent/review-docs.md` | Documentation alignment and learnings capture |
 | `.opencode/tools/install-skill.ts` | Skill installer |
 
 ## Skills
@@ -113,6 +114,55 @@ To add a new detectable stack:
 - **Non-invasive**: Only `stack-context.md` is written to target projects (by review-setup)
 - **Skill loading**: review-coordinator loads skills based on stack-context.md content
 - **OpenCode native**: Uses OpenCode's built-in support for global agents directory
+- **Documentation learnings**: review-docs subagent captures actionable lessons for AGENTS.md
+
+## Documentation Learnings Protocol
+
+The review system includes a protocol for capturing and preserving learnings from code reviews:
+
+### How It Works
+
+1. **During every review**, the `review-docs` subagent analyzes:
+   - Whether documentation aligns with code changes
+   - Patterns that should be formally documented
+   - Recurring issues that indicate missing guidelines
+
+2. **The review report includes**:
+   - A "Documentation Learnings" section when updates are needed
+   - Specific suggested text for `AGENTS.md` or `.github/copilot-instructions.md`
+   - Discrepancies between code and existing documentation
+
+3. **Target files for learnings**:
+   | File | What to Add |
+   |------|-------------|
+   | `AGENTS.md` | AI agent guidelines, conventions, build/test commands |
+   | `.github/copilot-instructions.md` | Coding standards, project-specific patterns |
+   | `.github/instructions/*.md` | Language/framework-specific Copilot instructions |
+
+### Learnings Criteria
+
+Proposed learnings must be:
+- **Actionable** — Can be turned into a clear guideline
+- **General** — Applies beyond the specific code being reviewed
+- **Valuable** — Would prevent bugs, improve consistency, or save time
+- **Stable** — Unlikely to change frequently
+
+### Example Learning Entry
+
+When a review identifies a pattern worth documenting:
+
+```markdown
+## Proposed Learning
+
+**Target:** AGENTS.md
+**Section:** Error Handling
+
+**Suggested text:**
+"Always wrap external API calls in try-catch with specific error types. 
+Log the original error before re-throwing a user-friendly message."
+
+**Rationale:** Found 3 instances of inconsistent error handling in this PR.
+```
 
 ## Testing
 

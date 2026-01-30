@@ -13,7 +13,8 @@ This system uses **global installation**: agents are installed to `~/.config/ope
 │   ├── review-setup.md          ← Stack detection
 │   ├── review-frontend.md       ← Frontend specialist
 │   ├── review-backend.md        ← Backend specialist
-│   └── review-devops.md         ← DevOps specialist
+│   ├── review-devops.md         ← DevOps specialist
+│   └── review-docs.md           ← Documentation & learnings
 └── tools/
     └── install-skill.ts         ← Skill installer
 
@@ -200,6 +201,22 @@ Detects project stack and installs skills.
 @review-setup                    # Interactive mode
 @review-setup detect --ci        # CI mode (no prompts)
 ```
+
+### review-docs
+
+Verifies documentation alignment and captures learnings from reviews.
+
+**Focus areas:**
+- Documentation completeness and accuracy
+- Convention alignment between code and docs
+- Identifying actionable lessons from reviews
+- Proposing updates to AGENTS.md or .github/copilot-instructions.md
+
+**Output includes:**
+- Documentation verification status
+- Proposed learnings with suggested text
+- Discrepancies found between code and documentation
+- Action items for documentation updates
 
 ---
 
@@ -440,17 +457,17 @@ User: @review-coordinator review src/api/users.ts
 │ 1. Load stack-context.md  │
 │ 2. Load relevant skills   │
 │ 3. Analyze code type      │
-│ 4. Delegate to sub-agent  │
+│ 4. Delegate to sub-agents │
 └───────────────────────────┘
                 │
-       ┌────────┼────────┐
-       ▼        ▼        ▼
-┌──────────┐ ┌──────────┐ ┌──────────┐
-│ frontend │ │ backend  │ │ devops   │
-│  agent   │ │  agent   │ │  agent   │
-└──────────┘ └──────────┘ └──────────┘
-       │        │        │
-       └────────┼────────┘
+   ┌────────────┼────────────┬────────────┐
+   ▼            ▼            ▼            ▼
+┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
+│ frontend │ │ backend  │ │ devops   │ │  docs    │
+│  agent   │ │  agent   │ │  agent   │ │  agent   │
+└──────────┘ └──────────┘ └──────────┘ └──────────┘
+   │            │            │            │
+   └────────────┼────────────┴────────────┘
                 │
                 ▼
 ┌───────────────────────────┐
@@ -458,6 +475,7 @@ User: @review-coordinator review src/api/users.ts
 │   - Critical findings     │
 │   - Major findings        │
 │   - Minor findings        │
+│   - Documentation learnings│
 │   - Verdict               │
 └───────────────────────────┘
 ```

@@ -74,6 +74,7 @@ opencode
 │   ├── review-frontend          │
 │   ├── review-backend           │
 │   ├── review-devops            │
+│   ├── review-docs              │
 │   └── review-setup             │
 └── tools/                       │
     └── install-skill            │
@@ -87,6 +88,7 @@ opencode
 1. **Install once** - Agents are installed globally to `~/.config/opencode/`
 2. **Run anywhere** - OpenCode loads global agents automatically in any project
 3. **Optional setup** - Run `@review-setup` to detect your stack and write `stack-context.md`
+4. **Capture learnings** - Reviews include documentation alignment checks and propose updates to AGENTS.md or .github/copilot-instructions.md
 
 ## Agents
 
@@ -96,6 +98,7 @@ opencode
 | `review-frontend` | React, Angular, CSS, accessibility |
 | `review-backend` | APIs, databases, authentication |
 | `review-devops` | Docker, CI/CD, Terraform, Kubernetes |
+| `review-docs` | Documentation alignment and learnings capture |
 | `review-setup` | Stack detection and skill installation |
 
 ## Supported Stacks
