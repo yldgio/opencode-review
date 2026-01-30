@@ -180,3 +180,12 @@ Before committing:
 - [ ] No placeholder text (`[TODO]`, `...`)
 - [ ] Scripts handle errors gracefully
 - [ ] Test installers on both Unix and Windows
+
+## Important: Installer Updates
+
+**When adding or modifying files in `.opencode/agent/` or `.opencode/tools/`, you MUST update the installers:**
+
+- `install.sh` — Bash installer for Unix/macOS/WSL
+- `install.ps1` — PowerShell installer for Windows
+
+New agents or tools will NOT be available to users unless they are explicitly copied in both installer scripts. Always verify that any new file is included in the installation process.
