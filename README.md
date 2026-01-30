@@ -55,7 +55,10 @@ cd /path/to/your/project
 # Detect stack and install skills (auto-installs by default)
 opencode run --agent review-setup "detect the project stack"
 
-# Or with interactive confirmation (for inside OpenCode sessions)
+# With skill discovery (verifies skills exist before installing)
+opencode run --agent review-setup "detect the project stack --discovery"
+
+# Interactive mode (asks for confirmation before installing)
 opencode run --agent review-setup "detect the project stack --interactive"
 
 # Review a file
@@ -67,6 +70,57 @@ git diff main...HEAD | opencode run --agent review-coordinator "review this diff
 # Interactive mode
 opencode
 # Then type: @review-coordinator review src/
+```
+
+## Setup Options
+
+The `@review-setup` agent supports several flags that can be combined:
+
+| Flag | Description |
+|------|-------------|
+| *(default)* | Auto-detect stack and install all skills from default repo |
+| `--interactive` | Ask for confirmation before installing skills |
+| `--discovery` | Verify skills exist in remote repos before installing |
+| `--project` | Install skills to project (`.opencode/rules/`) instead of global |
+
+### Examples
+
+```bash
+# Default: auto-detect and install (fastest, may fail if skill doesn't exist)
+opencode run --agent review-setup "detect the project stack"
+
+# Discovery mode: check availability first, install only found skills
+opencode run --agent review-setup "detect the project stack --discovery"
+
+# Interactive + Discovery: verify availability, then ask confirmation
+opencode run --agent review-setup "detect the project stack --interactive --discovery"
+
+# Project-level installation with discovery
+opencode run --agent review-setup "detect the project stack --discovery --project"
+```
+
+### Configure Skill Repositories
+
+By default, discovery searches these repositories (in order):
+1. `anthropics/skills`
+2. `yldgio/anomaly-codereview`
+3. `github/awesome-copilot`
+4. `vercel/agent-skills`
+
+Override with the `SKILL_REPOS` environment variable:
+
+```bash
+# Unix/macOS
+export SKILL_REPOS="my-org/skills,yldgio/codereview-skills"
+
+# Windows PowerShell
+$env:SKILL_REPOS = "my-org/skills,yldgio/codereview-skills"
+```
+
+For higher GitHub API rate limits, set a token:
+
+```bash
+export GITHUB_TOKEN="ghp_your_token_here"
 ```
 
 ## How It Works
@@ -81,7 +135,8 @@ opencode
 │   ├── review-docs              │
 │   └── review-setup             │
 └── tools/                       │
-    └── install-skill            │
+    ├── install-skill            │
+    └── discover-skills          │
                                  │
          ┌───────────────────────┘
          │ @review-setup creates (optional)
@@ -190,12 +245,14 @@ Remove the agents from your global config:
 ```bash
 rm ~/.config/opencode/agents/review-*.md
 rm ~/.config/opencode/tools/install-skill.ts
+rm ~/.config/opencode/tools/discover-skills.ts
 ```
 
 **Windows PowerShell:**
 ```powershell
 Remove-Item $env:USERPROFILE\.config\opencode\agents\review-*.md
 Remove-Item $env:USERPROFILE\.config\opencode\tools\install-skill.ts
+Remove-Item $env:USERPROFILE\.config\opencode\tools\discover-skills.ts
 ```
 
 ## Documentation
