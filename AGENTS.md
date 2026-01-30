@@ -137,6 +137,7 @@ The review system includes a protocol for capturing and preserving learnings fro
    |------|-------------|
    | `AGENTS.md` | AI agent guidelines, conventions, build/test commands |
    | `.github/copilot-instructions.md` | Coding standards, project-specific patterns |
+   | `.github/instructions/*.md` | Language/framework-specific Copilot instructions |
 
 ### Learnings Criteria
 

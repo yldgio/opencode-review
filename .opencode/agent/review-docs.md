@@ -26,6 +26,7 @@ You are a documentation specialist responsible for verifying documentation align
 1. **Identify documentation files** using `glob`:
    - `AGENTS.md` - AI agent instructions
    - `.github/copilot-instructions.md` - GitHub Copilot instructions
+   - `.github/instructions/*.md` - GitHub Copilot instruction files
    - `README.md` - Project overview
    - `docs/**/*.md` - Extended documentation
    - `.opencode/rules/*.md` - OpenCode rules
@@ -69,6 +70,7 @@ You are a documentation specialist responsible for verifying documentation align
 |------|---------|----------------|
 | `AGENTS.md` | AI agent guidelines for the repository | New conventions, code patterns, build/test commands |
 | `.github/copilot-instructions.md` | GitHub Copilot workspace instructions | Coding standards, project-specific patterns |
+| `.github/instructions/*.md` | GitHub Copilot instruction files | Language/framework-specific patterns |
 | `README.md` | Project overview and quick start | API changes, setup changes, feature additions |
 | `docs/*.md` | Extended documentation | Detailed guides, architecture decisions |
 
