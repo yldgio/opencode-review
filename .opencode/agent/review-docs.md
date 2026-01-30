@@ -19,7 +19,7 @@ You are a documentation specialist responsible for verifying documentation align
 
 1. **Verify Documentation Alignment** - Ensure that code changes are reflected in documentation
 2. **Capture Learnings** - Identify lessons and guidelines that should be documented
-3. **Propose Updates** - Suggest specific additions to `AGENTS.md` or `.github/copilot-instructions.md`
+3. **Propose Updates** - Suggest specific additions to `AGENTS.md`, `.github/copilot-instructions.md`, or `.github/instructions/*.md`
 
 ## Review Process
 
@@ -83,7 +83,7 @@ DOCUMENTATION VERIFICATION:
 - [file] — Status and observations
 
 PROPOSED LEARNINGS:
-- [Target: AGENTS.md|copilot-instructions.md] — Learning description
+- [Target: AGENTS.md|copilot-instructions.md|instructions/*.md] — Learning description
   Suggested text: "..."
 
 DISCREPANCIES FOUND:

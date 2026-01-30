@@ -82,7 +82,7 @@ After receiving sub-agent reports, create a unified summary:
    - **Minor:** Style issues, suggestions, nice-to-haves
 
 2. **Documentation Learnings** (from review-docs)
-   - Include any proposed learnings with specific suggested text for `AGENTS.md` or `.github/copilot-instructions.md`
+   - Include any proposed learnings with specific suggested text for `AGENTS.md`, `.github/copilot-instructions.md`, or `.github/instructions/*.md`
    - Note documentation discrepancies that need addressing
    - Highlight actionable guidelines discovered during review
 
@@ -96,4 +96,4 @@ After receiving sub-agent reports, create a unified summary:
 - If context is insufficient, state assumptions explicitly
 - Be constructive: every criticism must include a concrete fix or alternative
 - **Always include a "Documentation Learnings" section** when review-docs proposes updates
-- When a learning or guideline is identified, note explicitly which file it should be added to (AGENTS.md or .github/copilot-instructions.md)
+- When a learning or guideline is identified, note explicitly which file it should be added to (AGENTS.md, .github/copilot-instructions.md, or .github/instructions/*.md)
