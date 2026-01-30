@@ -32,7 +32,8 @@ Install skills from these repositories (in order of preference):
 | Repository | Description |
 |------------|-------------|
 | `
-yldgio/anomaly-codereview` | Curated skills for common stacks (Next.js, React, FastAPI, Docker, etc.) |
+
+yldgio/codereview-skills` | Curated skills for common stacks (Next.js, React, FastAPI, Docker, etc.) |
 | `github/awesome-copilot` | Community-contributed skills |
 
 Use the `install-skill` tool to install skills:
@@ -40,11 +41,13 @@ Use the `install-skill` tool to install skills:
 ```
 # Global installation (default - shared across all projects)
 install-skill({ repo: "
-yldgio/anomaly-codereview", skills: ["nextjs", "react", "docker"] })
+
+yldgio/codereview-skills", skills: ["nextjs", "react", "docker"] })
 
 # Project-level installation (specific to current project)
 install-skill({ repo: "
-yldgio/anomaly-codereview", skills: ["nextjs"], projectLevel: true })
+
+yldgio/codereview-skills", skills: ["nextjs"], projectLevel: true })
 ```
 
 **Default behavior:** Skills are installed globally to `~/.config/opencode/rules/` so they're available in all projects.
@@ -159,13 +162,17 @@ You MUST output your findings in this exact structured format:
 
 **Installed Skills:**
 - nextjs from 
-yldgio/anomaly-codereview
+
+yldgio/codereview-skills
 - react from 
-yldgio/anomaly-codereview
+
+yldgio/codereview-skills
 - docker from 
-yldgio/anomaly-codereview
+
+yldgio/codereview-skills
 - github-actions from 
-yldgio/anomaly-codereview
+
+yldgio/codereview-skills
 
 **Status:** Success
 ```
@@ -192,11 +199,14 @@ After confirmation:
 ```
 **Installed Skills:**
 - fastapi from 
-yldgio/anomaly-codereview
+
+yldgio/codereview-skills
 - docker from 
-yldgio/anomaly-codereview
+
+yldgio/codereview-skills
 - azure-devops from 
-yldgio/anomaly-codereview
+
+yldgio/codereview-skills
 
 **Status:** Success
 ```

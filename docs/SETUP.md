@@ -229,8 +229,10 @@ Skills are specialized review rules for specific technologies. They're installed
 | Repository | Description |
 |------------|-------------|
 | [
-yldgio/anomaly-codereview](https://github.com/
-yldgio/anomaly-codereview) | Curated skills (15 skills) |
+
+yldgio/codereview-skills](https://github.com/
+
+yldgio/codereview-skills) | Curated skills (15 skills) |
 | [github/awesome-copilot](https://github.com/github/awesome-copilot) | Community skills (optional) |
 
 ### Available Skills
@@ -266,11 +268,13 @@ opencode run --agent review-setup "detect the project stack"
 
 # Manual installation via npx (global)
 npx skills add https://github.com/
-yldgio/anomaly-codereview --skill nextjs -a opencode -g -y
+
+yldgio/codereview-skills --skill nextjs -a opencode -g -y
 
 # Manual installation via npx (project-level)
 npx skills add https://github.com/
-yldgio/anomaly-codereview --skill nextjs -a opencode -y
+
+yldgio/codereview-skills --skill nextjs -a opencode -y
 ```
 
 #### Using the install-skill tool directly
@@ -280,11 +284,13 @@ When calling the `install-skill` tool from an agent or prompt:
 ```
 # Global installation (default)
 install-skill({ repo: "
-yldgio/anomaly-codereview", skills: ["nextjs", "react"] })
+
+yldgio/codereview-skills", skills: ["nextjs", "react"] })
 
 # Project-level installation
 install-skill({ repo: "
-yldgio/anomaly-codereview", skills: ["nextjs"], projectLevel: true })
+
+yldgio/codereview-skills", skills: ["nextjs"], projectLevel: true })
 ```
 
 | Scope | Location | Use case |
@@ -428,7 +434,8 @@ export OPENCODE_CONFIG_DIR=/path/to/my/config
 2. Install skills manually:
    ```bash
    npx skills add https://github.com/
-yldgio/anomaly-codereview --skill <name> -a opencode -y
+
+yldgio/codereview-skills --skill <name> -a opencode -y
    ```
 
 ---
@@ -504,7 +511,8 @@ User: @review-coordinator review src/api/users.ts
 ```typescript
 install-skill({
   repo: "
-yldgio/anomaly-codereview",
+
+yldgio/codereview-skills",
   skills: ["nextjs", "react", "docker"]
 })
 ```
