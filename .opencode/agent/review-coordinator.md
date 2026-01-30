@@ -68,23 +68,50 @@ Before delegating, load stack-specific guidance:
 - Suggest running `@review-setup` to detect the project stack and generate context
 
 ### Phase 2: Delegation
-Delegate reviews to the appropriate specialized agents using the `task` tool:
 
-| Domain | Sub-agent | When to use |
-|--------|-----------|-------------|
-| React, Vue, CSS, accessibility, UI logic | `review-frontend` | UI components, client-side code |
-| APIs, databases, business logic, auth | `review-backend` | Server code, data layer |
-| Docker, CI/CD, IaC, configs | `review-devops` | Infrastructure, deployment |
-| Documentation alignment, learnings | `review-docs` | All reviews (captures learnings) |
+Delegate reviews **only to relevant sub-agents** based on file types. Do NOT delegate to all agents for every review.
 
-**Delegation rules:**
-- Always delegate to at least one sub-agent
-- For full-stack changes, delegate to multiple agents in parallel
-- **Always delegate to `review-docs`** to capture learnings and verify documentation
-- Provide each sub-agent with:
-  - Specific file paths to review
-  - Context about what aspects to focus on
-  - Relevant stack-specific rules from loaded skills (if available)
+#### File Type to Agent Mapping
+
+| File Extensions | Delegate to |
+|-----------------|-------------|
+| `.ts`, `.tsx`, `.jsx`, `.js`, `.vue`, `.svelte`, `.css`, `.scss`, `.html` | `review-frontend` |
+| `.py`, `.java`, `.cs`, `.go`, `.rb`, `.php`, `.rs`, `.kt` | `review-backend` |
+| `Dockerfile`, `.yml`, `.yaml`, `.tf`, `.bicep`, `.sh`, `.ps1` | `review-devops` |
+| `.md`, `.mdx`, `.txt`, `.rst` | `review-docs` |
+
+#### Delegation Rules
+
+1. **Analyze files first** - Identify which file types are in the changeset
+2. **Delegate selectively** - Only call agents that match the file types present
+3. **Skip irrelevant agents** - If no frontend files, do NOT call review-frontend
+4. **Parallel delegation** - When multiple agents are needed, call them in parallel
+5. **Minimum delegation** - Always delegate to at least one agent
+
+#### Examples
+
+| Changeset | Agents to Call |
+|-----------|----------------|
+| `src/components/Button.tsx` | `review-frontend` only |
+| `api/users.py`, `api/auth.py` | `review-backend` only |
+| `Dockerfile`, `.github/workflows/ci.yml` | `review-devops` only |
+| `src/App.tsx`, `api/server.ts` | `review-frontend` + `review-backend` |
+| `README.md` | `review-docs` only |
+| Mixed (frontend + backend + infra) | All relevant agents in parallel |
+
+#### Agent Responsibilities
+
+| Sub-agent | Focus Areas |
+|-----------|-------------|
+| `review-frontend` | React, Vue, CSS, accessibility, UI logic, client-side performance |
+| `review-backend` | APIs, databases, business logic, auth, server-side security |
+| `review-devops` | Docker, CI/CD, IaC, configs, deployment, infrastructure security |
+| `review-docs` | Documentation accuracy, completeness, learnings capture |
+
+**Provide each sub-agent with:**
+- Specific file paths to review (only files relevant to that agent)
+- Context about what aspects to focus on
+- Relevant stack-specific rules from loaded skills (if available)
 
 ### Phase 3: Synthesis
 After receiving sub-agent reports, create a unified summary:
@@ -94,19 +121,17 @@ After receiving sub-agent reports, create a unified summary:
    - **Major:** Bugs, performance issues, missing error handling
    - **Minor:** Style issues, suggestions, nice-to-haves
 
-2. **Documentation Learnings** (from review-docs)
-   - Include any proposed learnings with specific suggested text for `AGENTS.md`, `.github/copilot-instructions.md`, or `.github/instructions/*.md`
+2. **Documentation Learnings** (only if review-docs was called)
+   - Include any proposed learnings with specific suggested text
    - Note documentation discrepancies that need addressing
-   - Highlight actionable guidelines discovered during review
 
 3. **Verdict:** `APPROVE`, `REQUEST CHANGES`, or `NEEDS DISCUSSION`
 
 4. **Action Items:** Numbered list of required changes before approval
 
 ## Rules
+- **Delegate selectively** - Only call agents relevant to the file types being reviewed
 - Reference code by `file:line` format when possible
 - If sub-agents return conflicting recommendations, adjudicate and explain your decision
 - If context is insufficient, state assumptions explicitly
 - Be constructive: every criticism must include a concrete fix or alternative
-- **Always include a "Documentation Learnings" section** when review-docs proposes updates
-- When a learning or guideline is identified, note explicitly which file it should be added to (AGENTS.md, .github/copilot-instructions.md, or .github/instructions/*.md)
