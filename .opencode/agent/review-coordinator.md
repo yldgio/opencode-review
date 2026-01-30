@@ -88,7 +88,23 @@ ALWAYS output a status message BEFORE delegating to sub-agents. This keeps the u
 
 **CRITICAL: Parallel Execution**
 
-When delegating to multiple agents, you MUST call them in parallel by including multiple `task` tool invocations in a single response. Do NOT wait for one agent to complete before calling the next.
+You MUST call ALL sub-agents in a SINGLE message. Do NOT output anything between task calls.
+
+CORRECT (single message, all tasks together):
+```
+Delegating review to: review-backend, review-devops, review-docs (3 agents in parallel)...
+[task: review-backend] [task: review-devops] [task: review-docs]
+```
+
+WRONG (multiple messages, sequential):
+```
+Delegating to review-backend...
+[task: review-backend]
+Delegating to review-devops...  ← This means you made separate calls!
+[task: review-devops]
+```
+
+If you see yourself outputting multiple "Delegating..." messages, you are doing it WRONG.
 
 #### Examples
 

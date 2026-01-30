@@ -25,7 +25,13 @@ If the coordinator provides stack context (e.g., "uses Docker", "Terraform proje
 - Terraform → `skill({ name: "terraform" })`
 - GitHub Actions → `skill({ name: "github-actions" })`
 - AWS → `skill({ name: "aws" })`
-
+- Azure DevOps → `skill({ name: "azure-devops" })`
+- GCP → `skill({ name: "gcp" })`
+- CI/CD → `skill({ name: "ci-cd" })`
+- Security → `skill({ name: "security-best-practices" })`
+- Observability → `skill({ name: "observability" })`
+- Azure → `skill({ name: "azure" })`
+find a matching skill from the available skill repositories.
 Apply loaded skill rules alongside your default checklist.
 
 ## Your Expertise
