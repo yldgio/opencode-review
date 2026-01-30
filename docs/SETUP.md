@@ -210,7 +210,7 @@ Verifies documentation alignment and captures learnings from reviews.
 - Documentation completeness and accuracy
 - Convention alignment between code and docs
 - Identifying actionable lessons from reviews
-- Proposing updates to AGENTS.md or .github/copilot-instructions.md
+- Proposing updates to AGENTS.md, .github/copilot-instructions.md, or .github/instructions/*.md
 
 **Output includes:**
 - Documentation verification status

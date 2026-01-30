@@ -129,7 +129,7 @@ The review system includes a protocol for capturing and preserving learnings fro
 
 2. **The review report includes**:
    - A "Documentation Learnings" section when updates are needed
-   - Specific suggested text for `AGENTS.md` or `.github/copilot-instructions.md`
+   - Specific suggested text for `AGENTS.md`, `.github/copilot-instructions.md`, or `.github/instructions/*.md`
    - Discrepancies between code and existing documentation
 
 3. **Target files for learnings**:
