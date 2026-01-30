@@ -11,6 +11,7 @@ tools:
   glob: true
   grep: true
   install-skill: true
+  discover-skills: true
 ---
 
 You are a stack detection agent specialized in analyzing codebases to identify technology stacks and install appropriate code review skills.
@@ -68,6 +69,17 @@ You operate in one of two modes based on the input:
 - **Output**: Propose detected stacks, await confirmation, install skills, report result
 - **Use case**: When running inside OpenCode interactive session where user can respond
 
+### Discovery Mode (Optional)
+- **Trigger**: Prompt contains `--discovery`
+- **Behavior**: 
+  1. Detect stacks normally
+  2. Call `discover-skills` to verify which skills exist in remote repos
+  3. Install only skills that were found
+  4. Report missing skills in output
+- **Fallback**: If discovery fails (rate limit, network error), log a warning and fall back to default behavior (install all detected skills from default repo)
+- **Use case**: When you want to avoid failed installations or verify skill availability before installing
+- **Can combine with**: `--ci` or `--interactive` (e.g., `--discovery --ci`)
+
 ## Installation Scope
 
 By default, skills are installed **globally**. Check the prompt for scope flags:
@@ -121,11 +133,20 @@ Follow these steps to detect the project stack:
 
 4. **Build evidence list** showing what files/patterns triggered each detection
 
-5. **Install skills** using the `install-skill` tool:
-   - In CI mode: Install all detected skills immediately
+5. **[If --discovery flag present] Discover available skills**
+   - Call `discover-skills({ stacks: [list of detected stack names] })`
+   - Parse the JSON result from the tool
+   - If successful: filter the skills list to only those returned in `found`
+   - If failed (errors or empty response): log a warning and continue with all detected skills (fallback to default behavior)
+   - Note any stacks reported in `notFound` for the output report
+
+6. **Install skills** using the `install-skill` tool:
+   - If discovery was run and successful: install only discovered skills, using the repo indicated in the discovery result
+   - If discovery was NOT run OR failed: install all detected skills from default repo (current behavior)
+   - In CI mode: Install immediately
    - In Interactive mode: Ask for confirmation first, then install approved skills
 
-6. **Output structured result** in the format specified below
+7. **Output structured result** in the format specified below
 
 ## Output Format
 
@@ -209,6 +230,57 @@ yldgio/codereview-skills
 yldgio/codereview-skills
 
 **Status:** Success
+```
+
+### Example Output (CI Mode with --discovery)
+
+```
+## Setup Result
+
+**Mode:** CI
+**Discovery:** Enabled
+
+**Detected Stacks:**
+- Next.js: next.config.js found
+- React: package.json contains "react"
+- Angular: angular.json found
+
+**Skill Discovery:**
+- nextjs: found in yldgio/codereview-skills - "Next.js App Router patterns"
+- react: found in yldgio/codereview-skills - "React best practices"
+- angular: NOT FOUND (checked: anthropics/skills, yldgio/anomaly-codereview, github/awesome-copilot, vercel/agent-skills)
+
+**Installed Skills:**
+- nextjs from yldgio/codereview-skills
+- react from yldgio/codereview-skills
+
+**Skipped (not available):**
+- angular
+
+**Status:** Partial (1 skill not available)
+```
+
+### Example Output (Discovery Fallback)
+
+When discovery fails due to rate limiting or network errors:
+
+```
+## Setup Result
+
+**Mode:** CI
+**Discovery:** Failed (falling back to default behavior)
+
+**Warning:** Could not complete skill discovery: GitHub API rate limit exceeded. Installing all detected skills from default repository.
+
+**Detected Stacks:**
+- Next.js: next.config.js found
+- React: package.json contains "react"
+
+**Installed Skills:**
+- nextjs from yldgio/codereview-skills
+- react from yldgio/codereview-skills
+
+**Status:** Success (discovery skipped)
 ```
 
 ## Writing Stack Context

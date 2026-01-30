@@ -147,6 +147,69 @@ This file:
 
 ---
 
+## Skill Discovery (Optional)
+
+By default, `@review-setup` installs skills from hardcoded repository list without checking if they exist. This is fast but may fail if a skill doesn't exist in the repository.
+
+### Enable Discovery Mode
+
+Add `--discovery` flag to verify skill availability before installation:
+
+```bash
+# Check which skills are available, then install only those found
+opencode run --agent review-setup "detect the project stack --discovery"
+
+# CI mode with discovery
+opencode run --agent review-setup "--discovery --ci"
+
+# Interactive mode with discovery
+opencode run --agent review-setup "--interactive --discovery"
+```
+
+### What Discovery Does
+
+1. Detects your project's tech stack (same as normal mode)
+2. Searches configured GitHub repositories to find matching skills
+3. Installs only skills that were actually found
+4. Reports which stacks have no available skill
+
+### Configure Skill Repositories
+
+Set the `SKILL_REPOS` environment variable to customize where skills are searched:
+
+```bash
+# Unix/macOS
+export SKILL_REPOS="my-org/skills,yldgio/codereview-skills"
+
+# Windows PowerShell
+$env:SKILL_REPOS = "my-org/skills,yldgio/codereview-skills"
+```
+
+**Default repositories** (searched in order, first match wins):
+
+1. `anthropics/skills`
+2. `yldgio/anomaly-codereview`
+3. `github/awesome-copilot`
+4. `vercel/agent-skills`
+
+### GitHub API Rate Limits
+
+The discovery tool uses GitHub's public API which has rate limits:
+- **Unauthenticated:** 60 requests/hour
+- **Authenticated:** 5,000 requests/hour
+
+To increase the limit, set a GitHub token:
+
+```bash
+export GITHUB_TOKEN="ghp_your_token_here"
+```
+
+### Fallback Behavior
+
+If discovery fails (due to rate limiting, network errors, etc.), the system automatically falls back to default behavior: installing all detected skills from the default repository. This ensures the setup process never completely fails due to discovery issues.
+
+---
+
 ## Agents
 
 ### review-coordinator
