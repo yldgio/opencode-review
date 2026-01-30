@@ -85,8 +85,22 @@ Delegate reviews **only to relevant sub-agents** based on file types. Do NOT del
 1. **Analyze files first** - Identify which file types are in the changeset
 2. **Delegate selectively** - Only call agents that match the file types present
 3. **Skip irrelevant agents** - If no frontend files, do NOT call review-frontend
-4. **Parallel delegation** - When multiple agents are needed, call them in parallel
+4. **ALWAYS parallelize** - When multiple agents are needed, call ALL of them in a single message with multiple `task` tool calls. NEVER call agents sequentially.
 5. **Minimum delegation** - Always delegate to at least one agent
+
+**CRITICAL: Parallel Execution**
+
+When delegating to multiple agents, you MUST call them in parallel by including multiple `task` tool invocations in a single response. Do NOT wait for one agent to complete before calling the next.
+
+```
+# CORRECT: Single message with multiple parallel task calls
+[task: review-frontend with frontend files]
+[task: review-backend with backend files]
+[task: review-devops with infra files]
+
+# WRONG: Sequential calls (slow)
+[task: review-frontend] → wait → [task: review-backend] → wait → [task: review-devops]
+```
 
 #### Examples
 
