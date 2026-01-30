@@ -103,17 +103,11 @@ export default tool({
 
 ## Skills
 
-Skills are hosted at [
-
-yldgio/codereview-skills](https://github.com/
-
-yldgio/codereview-skills).
+Skills are hosted at [yldgio/codereview-skills](https://github.com/yldgio/codereview-skills).
 
 To add a new detectable stack:
 1. Add detection pattern to `review-setup.md` detection matrix
-2. Create skill in `
-
-yldgio/codereview-skills/skills/<name>/SKILL.md`
+2. Create skill in `yldgio/codereview-skills/skills/<name>/SKILL.md`
 
 ## Architecture Notes
 
@@ -125,52 +119,16 @@ yldgio/codereview-skills/skills/<name>/SKILL.md`
 
 ## Documentation Learnings Protocol
 
-The review system includes a protocol for capturing and preserving learnings from code reviews:
+The `review-docs` subagent captures learnings from reviews and proposes updates to documentation.
 
-### How It Works
+**Target files:**
 
-1. **During every review**, the `review-docs` subagent analyzes:
-   - Whether documentation aligns with code changes
-   - Patterns that should be formally documented
-   - Recurring issues that indicate missing guidelines
+| File | What to Add |
+|------|-------------|
+| `AGENTS.md` | AI agent guidelines, conventions |
+| `.github/copilot-instructions.md` | Coding standards, patterns |
 
-2. **The review report includes**:
-   - A "Documentation Learnings" section when updates are needed
-   - Specific suggested text for `AGENTS.md`, `.github/copilot-instructions.md`, or `.github/instructions/*.md`
-   - Discrepancies between code and existing documentation
-
-3. **Target files for learnings**:
-   | File | What to Add |
-   |------|-------------|
-   | `AGENTS.md` | AI agent guidelines, conventions, build/test commands |
-   | `.github/copilot-instructions.md` | Coding standards, project-specific patterns |
-   | `.github/instructions/*.md` | Language/framework-specific Copilot instructions |
-
-### Learnings Criteria
-
-Proposed learnings must be:
-- **Actionable** — Can be turned into a clear guideline
-- **General** — Applies beyond the specific code being reviewed
-- **Not Already Documented** — Verify it's not already covered
-- **Valuable** — Would prevent bugs, improve consistency, or save time
-- **Stable** — Unlikely to change frequently
-
-### Example Learning Entry
-
-When a review identifies a pattern worth documenting:
-
-```markdown
-## Proposed Learning
-
-**Target:** AGENTS.md
-**Section:** Error Handling
-
-**Suggested text:**
-"Always wrap external API calls in try-catch with specific error types. 
-Log the original error before re-throwing a user-friendly message."
-
-**Rationale:** Found 3 instances of inconsistent error handling in this PR.
-```
+**Learnings criteria:** Actionable, general, not already documented, valuable, stable.
 
 ## Testing
 
