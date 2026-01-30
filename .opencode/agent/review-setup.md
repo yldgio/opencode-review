@@ -32,10 +32,10 @@ Install skills from these repositories (in order of preference):
 
 | Repository | Description |
 |------------|-------------|
-| `
-
-yldgio/codereview-skills` | Curated skills for common stacks (Next.js, React, FastAPI, Docker, etc.) |
+| `yldgio/codereview-skills` | Curated skills for common stacks (Next.js, React, FastAPI, Docker, etc.) |
 | `github/awesome-copilot` | Community-contributed skills |
+| `vercel/agent-skills` | Vercel's official skill set |
+| `anthropics/skills` | Skills from Anthropic |
 
 Use the `install-skill` tool to install skills:
 
@@ -58,20 +58,23 @@ yldgio/codereview-skills", skills: ["nextjs"], projectLevel: true })
 You operate in one of two modes based on the input:
 
 ### CI Mode (Default - Fully Automatic)
+
 - **Trigger**: This is the DEFAULT mode. Use unless `--interactive` is specified.
 - **Behavior**: Perform detection and install skills automatically without asking questions
 - **Output**: Structured result with detected stacks and installed skills
 - **Why default**: Most users run this via `opencode run` which cannot handle interactive prompts
 
 ### Interactive Mode
+
 - **Trigger**: Prompt contains `--interactive` or `mode: interactive`
 - **Behavior**: Detect stack, present findings, ask for confirmation, then install approved skills
 - **Output**: Propose detected stacks, await confirmation, install skills, report result
 - **Use case**: When running inside OpenCode interactive session where user can respond
 
 ### Discovery Mode (Optional)
+
 - **Trigger**: Prompt contains `--discovery`
-- **Behavior**: 
+- **Behavior**:
   1. Detect stacks normally
   2. Call `discover-skills` to verify which skills exist in remote repos
   3. Install only skills that were found
@@ -85,12 +88,14 @@ You operate in one of two modes based on the input:
 By default, skills are installed **globally**. Check the prompt for scope flags:
 
 ### Global (Default)
+
 - **Trigger**: No `--project` flag in prompt
 - **Behavior**: Install skills with `install-skill({ ..., projectLevel: false })` (or omit the parameter)
 - **Location**: `~/.config/opencode/rules/`
 - **Use case**: Skills shared across all projects
 
 ### Project-Level
+
 - **Trigger**: Prompt contains `--project` or `scope: project`
 - **Behavior**: Install skills with `install-skill({ ..., projectLevel: true })`
 - **Location**: `.opencode/rules/` in the current project
@@ -248,7 +253,7 @@ yldgio/codereview-skills
 **Skill Discovery:**
 - nextjs: found in yldgio/codereview-skills - "Next.js App Router patterns"
 - react: found in yldgio/codereview-skills - "React best practices"
-- angular: NOT FOUND (checked: anthropics/skills, yldgio/anomaly-codereview, github/awesome-copilot, vercel/agent-skills)
+- angular: NOT FOUND (checked: yldgio/codereview-skills, github/awesome-copilot, vercel/agent-skills, anthropics/skills)
 
 **Installed Skills:**
 - nextjs from yldgio/codereview-skills
@@ -290,6 +295,7 @@ After detection and skill installation, you MUST write the `stack-context.md` fi
 **File location:** `.opencode/rules/stack-context.md` (relative to project root)
 
 **Steps:**
+
 1. Create the `.opencode/rules/` directory if it doesn't exist
 2. Write the stack-context.md file using the Write tool
 

@@ -187,10 +187,10 @@ $env:SKILL_REPOS = "my-org/skills,yldgio/codereview-skills"
 
 **Default repositories** (searched in order, first match wins):
 
-1. `anthropics/skills`
-2. `yldgio/anomaly-codereview`
-3. `github/awesome-copilot`
-4. `vercel/agent-skills`
+1. `yldgio/codereview-skills`
+2. `github/awesome-copilot`
+3. `vercel/agent-skills`
+4. `anthropics/skills`
 
 ### GitHub API Rate Limits
 

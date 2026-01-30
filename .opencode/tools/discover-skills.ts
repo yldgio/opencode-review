@@ -4,10 +4,10 @@ import { tool } from "@opencode-ai/plugin"
  * Default repositories to search for skills (in order of preference)
  */
 const DEFAULT_REPOS = [
-  "anthropics/skills",
-  "yldgio/anomaly-codereview",
+  "yldgio/codereview-skills",
   "github/awesome-copilot",
-  "vercel/agent-skills"
+  "vercel/agent-skills",
+  "anthropics/skills"
 ]
 
 /**

@@ -102,10 +102,10 @@ opencode run --agent review-setup "detect the project stack --discovery --projec
 ### Configure Skill Repositories
 
 By default, discovery searches these repositories (in order):
-1. `anthropics/skills`
-2. `yldgio/anomaly-codereview`
-3. `github/awesome-copilot`
-4. `vercel/agent-skills`
+1. `yldgio/codereview-skills`
+2. `github/awesome-copilot`
+3. `vercel/agent-skills`
+4. `anthropics/skills`
 
 Override with the `SKILL_REPOS` environment variable:
 
