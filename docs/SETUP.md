@@ -228,7 +228,9 @@ Skills are specialized review rules for specific technologies. They're installed
 
 | Repository | Description |
 |------------|-------------|
-| [yldgio/anomalyco](https://github.com/yldgio/anomalyco) | Curated skills (15 skills) |
+| [
+yldgio/anomaly-codereview](https://github.com/
+yldgio/anomaly-codereview) | Curated skills (15 skills) |
 | [github/awesome-copilot](https://github.com/github/awesome-copilot) | Community skills (optional) |
 
 ### Available Skills
@@ -263,10 +265,12 @@ Skills can be installed globally (shared across projects) or at project level.
 opencode run --agent review-setup "detect the project stack"
 
 # Manual installation via npx (global)
-npx skills add https://github.com/yldgio/anomalyco --skill nextjs -a opencode -g -y
+npx skills add https://github.com/
+yldgio/anomaly-codereview --skill nextjs -a opencode -g -y
 
 # Manual installation via npx (project-level)
-npx skills add https://github.com/yldgio/anomalyco --skill nextjs -a opencode -y
+npx skills add https://github.com/
+yldgio/anomaly-codereview --skill nextjs -a opencode -y
 ```
 
 #### Using the install-skill tool directly
@@ -275,10 +279,12 @@ When calling the `install-skill` tool from an agent or prompt:
 
 ```
 # Global installation (default)
-install-skill({ repo: "yldgio/anomalyco", skills: ["nextjs", "react"] })
+install-skill({ repo: "
+yldgio/anomaly-codereview", skills: ["nextjs", "react"] })
 
 # Project-level installation
-install-skill({ repo: "yldgio/anomalyco", skills: ["nextjs"], projectLevel: true })
+install-skill({ repo: "
+yldgio/anomaly-codereview", skills: ["nextjs"], projectLevel: true })
 ```
 
 | Scope | Location | Use case |
@@ -421,7 +427,8 @@ export OPENCODE_CONFIG_DIR=/path/to/my/config
 
 2. Install skills manually:
    ```bash
-   npx skills add https://github.com/yldgio/anomalyco --skill <name> -a opencode -y
+   npx skills add https://github.com/
+yldgio/anomaly-codereview --skill <name> -a opencode -y
    ```
 
 ---
@@ -496,7 +503,8 @@ User: @review-coordinator review src/api/users.ts
 **Example**:
 ```typescript
 install-skill({
-  repo: "yldgio/anomalyco",
+  repo: "
+yldgio/anomaly-codereview",
   skills: ["nextjs", "react", "docker"]
 })
 ```

@@ -102,11 +102,14 @@ export default tool({
 
 ## Skills
 
-Skills are hosted at [yldgio/anomalyco](https://github.com/yldgio/anomalyco).
+Skills are hosted at [
+yldgio/anomaly-codereview](https://github.com/
+yldgio/anomaly-codereview).
 
 To add a new detectable stack:
 1. Add detection pattern to `review-setup.md` detection matrix
-2. Create skill in `yldgio/anomalyco/skills/<name>/SKILL.md`
+2. Create skill in `
+yldgio/anomaly-codereview/skills/<name>/SKILL.md`
 
 ## Architecture Notes
 

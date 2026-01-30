@@ -7,7 +7,9 @@ A multi-agent code review system for [OpenCode](https://opencode.ai) that automa
 - **Global Installation** - Install once, use on any project
 - **Automatic Stack Detection** - Detects your project's technologies (React, Next.js, FastAPI, Docker, etc.)
 - **Specialized Agents** - Frontend, backend, and DevOps review specialists
-- **Remote Skills** - Installs curated skills from [yldgio/anomalyco](https://github.com/yldgio/anomalyco)
+- **Remote Skills** - Installs curated skills from [
+yldgio/anomaly-codereview](https://github.com/
+yldgio/anomaly-codereview)
 - **Non-Invasive** - Only writes one optional file to your project (`stack-context.md`)
 
 ## Quick Start
@@ -121,15 +123,18 @@ opencode run --agent review-setup "detect the project stack"
 opencode run --agent review-setup "detect the project stack --project"
 
 # Manual (global)
-npx skills add https://github.com/yldgio/anomalyco --skill nextjs -a opencode -g -y
+npx skills add https://github.com/
+yldgio/anomaly-codereview --skill nextjs -a opencode -g -y
 
 # Manual (project-level, to .opencode/rules/)
-npx skills add https://github.com/yldgio/anomalyco --skill nextjs -a opencode -y
+npx skills add https://github.com/
+yldgio/anomaly-codereview --skill nextjs -a opencode -y
 ```
 
 For project-specific skills via the `install-skill` tool, use `projectLevel: true`:
 ```
-install-skill({ repo: "yldgio/anomalyco", skills: ["nextjs"], projectLevel: true })
+install-skill({ repo: "
+yldgio/anomaly-codereview", skills: ["nextjs"], projectLevel: true })
 ```
 
 ## Project Files
