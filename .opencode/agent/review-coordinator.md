@@ -74,37 +74,17 @@ Delegate reviews **only to relevant sub-agents** based on file types. Do NOT del
 4. **ALWAYS parallelize** - When multiple agents are needed, call ALL of them in a single message with multiple `task` tool calls. NEVER call agents sequentially.
 5. **Minimum delegation** - Always delegate to at least one agent
 
-**CRITICAL: User Feedback**
-
-ALWAYS output a status message BEFORE delegating to sub-agents. This keeps the user informed during long reviews.
-
-```
-# Example output before delegation:
-"Delegating review to: review-frontend, review-backend (2 agents in parallel)..."
-
-# Or for single agent:
-"Delegating review to: review-frontend..."
-```
-
 **CRITICAL: Parallel Execution**
 
-You MUST call ALL sub-agents in a SINGLE message. Do NOT output anything between task calls.
+When delegating to multiple sub-agents:
 
-CORRECT (single message, all tasks together):
-```
-Delegating review to: review-backend, review-devops, review-docs (3 agents in parallel)...
-[task: review-backend] [task: review-devops] [task: review-docs]
-```
+1. **First** - Collect all agents you need to call and their prompts
+2. **Then** - Make ALL task calls in a single tool use block (no text output between them)
+3. **Finally** - After ALL tasks complete, output your synthesis
 
-WRONG (multiple messages, sequential):
-```
-Delegating to review-backend...
-[task: review-backend]
-Delegating to review-devops...  ← This means you made separate calls!
-[task: review-devops]
-```
+DO NOT output "Delegating to X..." before each task call. This forces sequential execution.
 
-If you see yourself outputting multiple "Delegating..." messages, you are doing it WRONG.
+Instead, batch all task calls together silently, then report results.
 
 #### Examples
 
