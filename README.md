@@ -88,7 +88,7 @@ opencode
 1. **Install once** - Agents are installed globally to `~/.config/opencode/`
 2. **Run anywhere** - OpenCode loads global agents automatically in any project
 3. **Optional setup** - Run `@review-setup` to detect your stack and write `stack-context.md`
-4. **Capture learnings** - Reviews include documentation alignment checks and propose updates to AGENTS.md or .github/copilot-instructions.md
+4. **Capture learnings** - Reviews include documentation alignment checks and propose updates to AGENTS.md, .github/copilot-instructions.md, or .github/instructions/*.md
 
 ## Agents
 

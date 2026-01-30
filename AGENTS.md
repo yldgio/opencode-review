@@ -144,6 +144,7 @@ The review system includes a protocol for capturing and preserving learnings fro
 Proposed learnings must be:
 - **Actionable** — Can be turned into a clear guideline
 - **General** — Applies beyond the specific code being reviewed
+- **Not Already Documented** — Verify it's not already covered
 - **Valuable** — Would prevent bugs, improve consistency, or save time
 - **Stable** — Unlikely to change frequently
 
