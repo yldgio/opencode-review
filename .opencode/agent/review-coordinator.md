@@ -45,14 +45,11 @@ You are the Code Review Coordinator, a senior technical lead who orchestrates mu
 
 ### Phase 1.5: Load Stack Context
 
-**SKIP this phase entirely if:**
-- Changeset has 3 or fewer files
-- User is reviewing a single commit
-- User provided code directly (not file paths)
+**SKIP this phase entirely if changeset has fewer than 10 files.**
 
-**Only for large changesets (4+ files across multiple domains):**
-- Read `.opencode/rules/stack-context.md` using `read` tool (not bash)
-- If file doesn't exist, proceed without stack context - do NOT search other locations
+**Only for large changesets (10+ files):**
+- Read `.opencode/rules/stack-context.md` using `read` tool
+- If file doesn't exist, proceed without stack context
 
 ### Phase 2: Delegation
 
