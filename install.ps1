@@ -98,7 +98,9 @@ Write-Host "Installing custom tools..."
 $SourceToolsDir = Join-Path $ScriptDir ".opencode\tools"
 
 Copy-Item (Join-Path $SourceToolsDir "install-skill.ts") $ToolsDir -Force
+Copy-Item (Join-Path $SourceToolsDir "discover-skills.ts") $ToolsDir -Force
 Write-Host "  - install-skill (skill installer)"
+Write-Host "  - discover-skills (skill discovery)"
 
 # Check for node
 $NodeExists = Get-Command node -ErrorAction SilentlyContinue

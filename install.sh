@@ -86,7 +86,9 @@ echo "  - review-devops (Docker, CI/CD, IaC)"
 echo ""
 echo "Installing custom tools..."
 cp "$SCRIPT_DIR/.opencode/tools/install-skill.ts" "$CONFIG_DIR/tools/"
+cp "$SCRIPT_DIR/.opencode/tools/discover-skills.ts" "$CONFIG_DIR/tools/"
 echo "  - install-skill (skill installer)"
+echo "  - discover-skills (skill discovery)"
 
 # Check for bun/node for tools
 if ! command -v bun &> /dev/null && ! command -v node &> /dev/null; then
