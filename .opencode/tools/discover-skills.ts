@@ -234,6 +234,7 @@ export default tool({
 
     if (reposToSearch.length === 0) {
       result.errors.push("No allowlisted repositories available for discovery. Aborting.")
+      return formatOutput(result, reposToSearch)
     }
     
     // Build headers (with optional auth)
@@ -289,44 +290,47 @@ export default tool({
       }
     }
     
-    // Format output
-    const output: string[] = []
-    
-    output.push("## Skill Discovery Results\n")
-    
-    if (result.found.length > 0) {
-      output.push("**Found:**")
-      for (const skill of result.found) {
-        const desc = skill.description ? ` - "${skill.description}"` : ""
-        output.push(`- ${skill.skill}: found in ${skill.repo}${desc}`)
-      }
-      output.push("")
-    }
-    
-    if (result.notFound.length > 0) {
-      output.push("**Not Found:**")
-      for (const stack of result.notFound) {
-        const skillName = STACK_TO_SKILL[stack] || stack.toLowerCase().replace(/[^a-z0-9]/g, "-")
-        output.push(`- ${skillName} (${stack}): NOT FOUND (checked: ${reposToSearch.join(", ")})`)
-      }
-      output.push("")
-    }
-    
-    if (result.errors.length > 0) {
-      output.push("**Errors:**")
-      for (const error of result.errors) {
-        output.push(`- ${error}`)
-      }
-      output.push("")
-    }
-    
-    output.push(`**Summary:** ${result.found.length} found, ${result.notFound.length} not found, ${result.errors.length} errors`)
-    
-    // Also return structured JSON for programmatic use
-    output.push("\n```json")
-    output.push(JSON.stringify(result, null, 2))
-    output.push("```")
-    
-    return output.join("\n")
+    return formatOutput(result, reposToSearch)
   },
 })
+
+function formatOutput(result: DiscoveryResult, reposToSearch: string[]): string {
+  const output: string[] = []
+  
+  output.push("## Skill Discovery Results\n")
+  
+  if (result.found.length > 0) {
+    output.push("**Found:**")
+    for (const skill of result.found) {
+      const desc = skill.description ? ` - "${skill.description}"` : ""
+      output.push(`- ${skill.skill}: found in ${skill.repo}${desc}`)
+    }
+    output.push("")
+  }
+  
+  if (result.notFound.length > 0) {
+    output.push("**Not Found:**")
+    for (const stack of result.notFound) {
+      const skillName = STACK_TO_SKILL[stack] || stack.toLowerCase().replace(/[^a-z0-9]/g, "-")
+      output.push(`- ${skillName} (${stack}): NOT FOUND (checked: ${reposToSearch.join(", ")})`)
+    }
+    output.push("")
+  }
+  
+  if (result.errors.length > 0) {
+    output.push("**Errors:**")
+    for (const error of result.errors) {
+      output.push(`- ${error}`)
+    }
+    output.push("")
+  }
+  
+  output.push(`**Summary:** ${result.found.length} found, ${result.notFound.length} not found, ${result.errors.length} errors`)
+  
+  // Also return structured JSON for programmatic use
+  output.push("\n```json")
+  output.push(JSON.stringify(result, null, 2))
+  output.push("```")
+  
+  return output.join("\n")
+}
