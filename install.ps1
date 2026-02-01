@@ -53,7 +53,7 @@ New-Item -ItemType Directory -Path $AgentsDir -Force | Out-Null
 New-Item -ItemType Directory -Path $ToolsDir -Force | Out-Null
 
 # Check for existing agents
-$Agents = @("review-coordinator", "review-setup", "review-frontend", "review-backend", "review-devops")
+$Agents = @("review-coordinator", "review-setup", "review-frontend", "review-backend", "review-devops", "review-security")
 $ExistingAgents = @()
 
 foreach ($agent in $Agents) {
@@ -85,12 +85,14 @@ Copy-Item (Join-Path $SourceAgentDir "review-setup.md") $AgentsDir -Force
 Copy-Item (Join-Path $SourceAgentDir "review-frontend.md") $AgentsDir -Force
 Copy-Item (Join-Path $SourceAgentDir "review-backend.md") $AgentsDir -Force
 Copy-Item (Join-Path $SourceAgentDir "review-devops.md") $AgentsDir -Force
+Copy-Item (Join-Path $SourceAgentDir "review-security.md") $AgentsDir -Force
 
 Write-Host "  - review-coordinator (main orchestrator)"
 Write-Host "  - review-setup (stack detection)"
 Write-Host "  - review-frontend (React, Vue, CSS)"
 Write-Host "  - review-backend (APIs, databases)"
 Write-Host "  - review-devops (Docker, CI/CD, IaC)"
+Write-Host "  - review-security (security vulnerabilities)"
 
 # Copy custom tools
 Write-Host ""

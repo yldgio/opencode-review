@@ -49,7 +49,7 @@ mkdir -p "$CONFIG_DIR/tools"
 
 # Check for existing agents
 EXISTING_AGENTS=""
-for agent in review-coordinator review-setup review-frontend review-backend review-devops; do
+for agent in review-coordinator review-setup review-frontend review-backend review-devops review-security; do
   if [ -f "$CONFIG_DIR/agents/$agent.md" ]; then
     EXISTING_AGENTS="$EXISTING_AGENTS $agent"
   fi
@@ -75,12 +75,14 @@ cp "$SCRIPT_DIR/.opencode/agent/review-setup.md" "$CONFIG_DIR/agents/"
 cp "$SCRIPT_DIR/.opencode/agent/review-frontend.md" "$CONFIG_DIR/agents/"
 cp "$SCRIPT_DIR/.opencode/agent/review-backend.md" "$CONFIG_DIR/agents/"
 cp "$SCRIPT_DIR/.opencode/agent/review-devops.md" "$CONFIG_DIR/agents/"
+cp "$SCRIPT_DIR/.opencode/agent/review-security.md" "$CONFIG_DIR/agents/"
 
 echo "  - review-coordinator (main orchestrator)"
 echo "  - review-setup (stack detection)"
 echo "  - review-frontend (React, Vue, CSS)"
 echo "  - review-backend (APIs, databases)"
 echo "  - review-devops (Docker, CI/CD, IaC)"
+echo "  - review-security (security vulnerabilities)"
 
 # Copy custom tools
 echo ""
