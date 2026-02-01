@@ -138,6 +138,7 @@ export GITHUB_TOKEN="ghp_your_token_here"
 │   ├── review-frontend          │
 │   ├── review-backend           │
 │   ├── review-devops            │
+│   ├── review-security          │
 │   ├── review-docs              │
 │   └── review-setup             │
 └── tools/                       │
@@ -163,6 +164,7 @@ export GITHUB_TOKEN="ghp_your_token_here"
 | `review-frontend` | React, Angular, CSS, accessibility |
 | `review-backend` | APIs, databases, authentication |
 | `review-devops` | Docker, CI/CD, Terraform, Kubernetes |
+| `review-security` | Security vulnerabilities, secrets, injection flaws |
 | `review-docs` | Documentation alignment and learnings capture |
 | `review-setup` | Stack detection and skill installation |
 

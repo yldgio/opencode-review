@@ -97,6 +97,7 @@ export default tool({
 |------|---------|
 | `.opencode/agent/review-coordinator.md` | Main orchestrator |
 | `.opencode/agent/review-setup.md` | Stack detection, writes stack-context.md |
+| `.opencode/agent/review-security.md` | Security review specialist |
 | `.opencode/agent/review-docs.md` | Documentation alignment and learnings capture |
 | `.opencode/tools/install-skill.ts` | Skill installer |
 | `.opencode/tools/discover-skills.ts` | Skill discovery from remote repos |
