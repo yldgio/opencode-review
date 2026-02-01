@@ -242,7 +242,7 @@ export GITHUB_TOKEN="ghp_your_token_here"
 
 ### Fallback Behavior
 
-If discovery fails (due to rate limiting, network errors, etc.), the system automatically falls back to default behavior: installing all detected skills from the **default allowlist**. This ensures the setup process never completely fails due to discovery issues, while still avoiding unapproved sources.
+If discovery fails (due to rate limiting, network errors, etc.), the system automatically falls back to default behavior: installing required skills from the **default skill repository**. This ensures the setup process never completely fails due to discovery issues, while still avoiding unapproved sources.
 
 ---
 

@@ -133,7 +133,6 @@ $env:SKILL_REPOS = "my-org/approved-skills,yldgio/codereview-skills"
 - Use `--interactive --discovery` when running locally to confirm installations.
 - Pin `SKILL_REPOS` in CI and prevent untrusted overrides.
 - Validate repository ownership and signed tags/commits before approving a new repo.
-```
 
 For higher GitHub API rate limits, set a token:
 

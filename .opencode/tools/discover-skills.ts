@@ -10,6 +10,8 @@ const DEFAULT_REPOS = [
   "anthropics/skills"
 ]
 
+const ALLOWED_REPOS = new Set(DEFAULT_REPOS)
+
 /**
  * Mapping from detected stack names to skill names
  */
@@ -223,6 +225,16 @@ export default tool({
     } else {
       reposToSearch = DEFAULT_REPOS
     }
+
+    const disallowedRepos = reposToSearch.filter(repo => !ALLOWED_REPOS.has(repo))
+    if (disallowedRepos.length > 0) {
+      result.errors.push(`Disallowed repositories requested: ${disallowedRepos.join(", ")}. Only allowlisted repositories can be used.`)
+      reposToSearch = reposToSearch.filter(repo => ALLOWED_REPOS.has(repo))
+    }
+
+    if (reposToSearch.length === 0) {
+      result.errors.push("No allowlisted repositories available for discovery. Aborting.")
+    }
     
     // Build headers (with optional auth)
     const headers: Record<string, string> = {
@@ -235,43 +247,45 @@ export default tool({
     }
     
     // Process each stack
-    for (const stack of args.stacks) {
-      const skillName = STACK_TO_SKILL[stack] || stack.toLowerCase().replace(/[^a-z0-9]/g, "-")
-      let found = false
-      
-      // Search repos in order
-      for (const repoString of reposToSearch) {
-        const parsed = parseRepo(repoString)
-        if (!parsed) {
-          result.errors.push(`Invalid repo format: ${repoString}`)
-          continue
+    if (reposToSearch.length > 0) {
+      for (const stack of args.stacks) {
+        const skillName = STACK_TO_SKILL[stack] || stack.toLowerCase().replace(/[^a-z0-9]/g, "-")
+        let found = false
+        
+        // Search repos in order
+        for (const repoString of reposToSearch) {
+          const parsed = parseRepo(repoString)
+          if (!parsed) {
+            result.errors.push(`Invalid repo format: ${repoString}`)
+            continue
+          }
+          
+          try {
+            const checkResult = await checkSkillInRepo(
+              parsed.owner,
+              parsed.repo,
+              skillName,
+              headers
+            )
+            
+            if (checkResult.exists) {
+              result.found.push({
+                stack,
+                skill: skillName,
+                repo: repoString,
+                description: checkResult.description
+              })
+              found = true
+              break // Stop at first repo that has the skill
+            }
+          } catch (error) {
+            result.errors.push(`Error checking ${repoString} for ${skillName}: ${error}`)
+          }
         }
         
-        try {
-          const checkResult = await checkSkillInRepo(
-            parsed.owner,
-            parsed.repo,
-            skillName,
-            headers
-          )
-          
-          if (checkResult.exists) {
-            result.found.push({
-              stack,
-              skill: skillName,
-              repo: repoString,
-              description: checkResult.description
-            })
-            found = true
-            break // Stop at first repo that has the skill
-          }
-        } catch (error) {
-          result.errors.push(`Error checking ${repoString} for ${skillName}: ${error}`)
+        if (!found) {
+          result.notFound.push(stack)
         }
-      }
-      
-      if (!found) {
-        result.notFound.push(stack)
       }
     }
     
