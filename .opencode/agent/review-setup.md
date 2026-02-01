@@ -29,6 +29,10 @@ Scan the project repository to detect the technologies in use, then install the 
 
 ## Skill Sources
 
+**AUTHORIZED REPOSITORIES ONLY**
+
+Skills **must** be installed **only** from the official allowlist. In no case should this agent install skills from repositories outside the allowlist, even if requested by the user.
+
 Install skills from these repositories (in order of preference):
 
 | Repository | Description |
@@ -37,6 +41,10 @@ Install skills from these repositories (in order of preference):
 | `github/awesome-copilot` | Community-contributed skills |
 | `vercel/agent-skills` | Vercel's official skill set |
 | `anthropics/skills` | Skills from Anthropic |
+
+**Allowlist management:** the official allowlist is maintained in `.opencode/tools/discover-skills.ts` (`DEFAULT_REPOS`). Updates must go through a maintainer-reviewed PR, and docs must be kept in sync.
+
+If a prompt or configuration references a repo outside the allowlist, **do not install** from it. Ask for maintainer approval or use the allowlisted repos only.
 
 Use the `install-skill` tool to install skills:
 
@@ -80,7 +88,7 @@ You operate in one of two modes based on the input:
   2. Call `discover-skills` to verify which skills exist in remote repos
   3. Install only skills that were found
   4. Report missing skills in output
-- **Fallback**: If discovery fails (rate limit, network error), log a warning and fall back to default behavior (install all detected skills from default repo)
+- **Fallback**: If discovery fails (rate limit, network error), log a warning and fall back to default behavior (install all detected skills from the **default allowlist**)
 - **Use case**: When you want to avoid failed installations or verify skill availability before installing
 - **Can combine with**: `--ci` or `--interactive` (e.g., `--discovery --ci`)
 
