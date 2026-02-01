@@ -42,7 +42,7 @@ Install skills from these repositories (in order of preference):
 | `vercel/agent-skills` | Vercel's official skill set |
 | `anthropics/skills` | Skills from Anthropic |
 
-**Allowlist management:** the official allowlist is maintained in `.opencode/tools/discover-skills.ts` (`DEFAULT_REPOS`). Updates must go through a maintainer-reviewed PR, and docs must be kept in sync.
+**Allowlist management:** the official allowlist is enforced by `.opencode/tools/discover-skills.ts` (`DEFAULT_REPOS`) and `.opencode/tools/install-skill.ts`. Updates must go through a maintainer-reviewed PR, and both tools and these docs must be kept in sync.
 
 If a prompt or configuration references a repo outside the allowlist, **do not install** from it. Ask for maintainer approval or use the allowlisted repos only.
 

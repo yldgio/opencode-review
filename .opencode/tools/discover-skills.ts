@@ -201,6 +201,12 @@ function parseRepo(repoString: string): { owner: string; repo: string } | null {
   return null
 }
 
+function normalizeRepo(repoString: string): string | null {
+  const parsed = parseRepo(repoString)
+  if (!parsed) return null
+  return `${parsed.owner}/${parsed.repo}`
+}
+
 export default tool({
   description: "Discover which skills are available for detected tech stacks in remote GitHub repositories",
   args: {
@@ -226,10 +232,14 @@ export default tool({
       reposToSearch = DEFAULT_REPOS
     }
 
-    const disallowedRepos = reposToSearch.filter(repo => !ALLOWED_REPOS.has(repo))
+    const normalizedRepos = reposToSearch.map(repo => normalizeRepo(repo) ?? repo)
+    const disallowedRepos = normalizedRepos.filter(repo => !ALLOWED_REPOS.has(repo))
     if (disallowedRepos.length > 0) {
       result.errors.push(`Disallowed repositories requested: ${disallowedRepos.join(", ")}. Only allowlisted repositories can be used.`)
-      reposToSearch = reposToSearch.filter(repo => ALLOWED_REPOS.has(repo))
+      reposToSearch = reposToSearch.filter(repo => {
+        const normalized = normalizeRepo(repo) ?? repo
+        return ALLOWED_REPOS.has(normalized)
+      })
     }
 
     if (reposToSearch.length === 0) {

@@ -117,16 +117,16 @@ Override with the `SKILL_REPOS` environment variable (allowlist only):
 
 ```bash
 # Unix/macOS
-export SKILL_REPOS="my-org/approved-skills,yldgio/codereview-skills"
+export SKILL_REPOS="yldgio/codereview-skills,github/awesome-copilot"
 
 # Windows PowerShell
-$env:SKILL_REPOS = "my-org/approved-skills,yldgio/codereview-skills"
+$env:SKILL_REPOS = "yldgio/codereview-skills,github/awesome-copilot"
 
 ```
 
 **Allowlist management:**
-- Default allowlist is defined in `.opencode/tools/discover-skills.ts` (`DEFAULT_REPOS`).
-- Update the allowlist via PRs, then keep `docs/SETUP.md` and this section aligned.
+- Default allowlist is defined in both `.opencode/tools/discover-skills.ts` and `.opencode/tools/install-skill.ts` (`DEFAULT_REPOS` in each).
+- Update the allowlist via PRs, then keep both tools, `docs/SETUP.md`, and this section aligned.
 - Do not accept skills from unapproved repositories without explicit maintainer or user approval.
 
 **Secure usage tips:**

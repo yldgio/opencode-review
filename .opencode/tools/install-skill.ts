@@ -16,7 +16,7 @@ function normalizeRepo(repo: string): string | null {
     return `${match[1]}/${match[2].replace(/\.git$/, "")}`
   }
   const parts = repo.split("/")
-  if (parts.length === 2) return repo
+  if (parts.length === 2) return repo.replace(/\.git$/, "")
   return null
 }
 
