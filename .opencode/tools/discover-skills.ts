@@ -10,6 +10,8 @@ const DEFAULT_REPOS = [
   "anthropics/skills"
 ]
 
+const ALLOWED_REPOS = new Set(DEFAULT_REPOS)
+
 /**
  * Mapping from detected stack names to skill names
  */
@@ -199,6 +201,12 @@ function parseRepo(repoString: string): { owner: string; repo: string } | null {
   return null
 }
 
+function normalizeRepo(repoString: string): string | null {
+  const parsed = parseRepo(repoString)
+  if (!parsed) return null
+  return `${parsed.owner}/${parsed.repo}`
+}
+
 export default tool({
   description: "Discover which skills are available for detected tech stacks in remote GitHub repositories",
   args: {
@@ -223,6 +231,21 @@ export default tool({
     } else {
       reposToSearch = DEFAULT_REPOS
     }
+
+    const normalizedRepos = reposToSearch.map(repo => normalizeRepo(repo) ?? repo)
+    const disallowedRepos = normalizedRepos.filter(repo => !ALLOWED_REPOS.has(repo))
+    if (disallowedRepos.length > 0) {
+      result.errors.push(`Disallowed repositories requested: ${disallowedRepos.join(", ")}. Only allowlisted repositories can be used.`)
+      reposToSearch = reposToSearch.filter(repo => {
+        const normalized = normalizeRepo(repo) ?? repo
+        return ALLOWED_REPOS.has(normalized)
+      })
+    }
+
+    if (reposToSearch.length === 0) {
+      result.errors.push("No allowlisted repositories available for discovery. Aborting.")
+      return formatOutput(result, reposToSearch)
+    }
     
     // Build headers (with optional auth)
     const headers: Record<string, string> = {
@@ -235,84 +258,89 @@ export default tool({
     }
     
     // Process each stack
-    for (const stack of args.stacks) {
-      const skillName = STACK_TO_SKILL[stack] || stack.toLowerCase().replace(/[^a-z0-9]/g, "-")
-      let found = false
-      
-      // Search repos in order
-      for (const repoString of reposToSearch) {
-        const parsed = parseRepo(repoString)
-        if (!parsed) {
-          result.errors.push(`Invalid repo format: ${repoString}`)
-          continue
+    if (reposToSearch.length > 0) {
+      for (const stack of args.stacks) {
+        const skillName = STACK_TO_SKILL[stack] || stack.toLowerCase().replace(/[^a-z0-9]/g, "-")
+        let found = false
+        
+        // Search repos in order
+        for (const repoString of reposToSearch) {
+          const parsed = parseRepo(repoString)
+          if (!parsed) {
+            result.errors.push(`Invalid repo format: ${repoString}`)
+            continue
+          }
+          
+          try {
+            const checkResult = await checkSkillInRepo(
+              parsed.owner,
+              parsed.repo,
+              skillName,
+              headers
+            )
+            
+            if (checkResult.exists) {
+              result.found.push({
+                stack,
+                skill: skillName,
+                repo: repoString,
+                description: checkResult.description
+              })
+              found = true
+              break // Stop at first repo that has the skill
+            }
+          } catch (error) {
+            result.errors.push(`Error checking ${repoString} for ${skillName}: ${error}`)
+          }
         }
         
-        try {
-          const checkResult = await checkSkillInRepo(
-            parsed.owner,
-            parsed.repo,
-            skillName,
-            headers
-          )
-          
-          if (checkResult.exists) {
-            result.found.push({
-              stack,
-              skill: skillName,
-              repo: repoString,
-              description: checkResult.description
-            })
-            found = true
-            break // Stop at first repo that has the skill
-          }
-        } catch (error) {
-          result.errors.push(`Error checking ${repoString} for ${skillName}: ${error}`)
+        if (!found) {
+          result.notFound.push(stack)
         }
       }
-      
-      if (!found) {
-        result.notFound.push(stack)
-      }
     }
     
-    // Format output
-    const output: string[] = []
-    
-    output.push("## Skill Discovery Results\n")
-    
-    if (result.found.length > 0) {
-      output.push("**Found:**")
-      for (const skill of result.found) {
-        const desc = skill.description ? ` - "${skill.description}"` : ""
-        output.push(`- ${skill.skill}: found in ${skill.repo}${desc}`)
-      }
-      output.push("")
-    }
-    
-    if (result.notFound.length > 0) {
-      output.push("**Not Found:**")
-      for (const stack of result.notFound) {
-        const skillName = STACK_TO_SKILL[stack] || stack.toLowerCase().replace(/[^a-z0-9]/g, "-")
-        output.push(`- ${skillName} (${stack}): NOT FOUND (checked: ${reposToSearch.join(", ")})`)
-      }
-      output.push("")
-    }
-    
-    if (result.errors.length > 0) {
-      output.push("**Errors:**")
-      for (const error of result.errors) {
-        output.push(`- ${error}`)
-      }
-      output.push("")
-    }
-    
-    output.push(`**Summary:** ${result.found.length} found, ${result.notFound.length} not found, ${result.errors.length} errors`)
-    
-    // Also return structured JSON for programmatic use
-    output.push("\n```json")
-    output.push(JSON.stringify(result, null, 2))
-    output.push("```")
-    
-    return output.join("\n")
+    return formatOutput(result, reposToSearch)
   },
 })
+
+function formatOutput(result: DiscoveryResult, reposToSearch: string[]): string {
+  const output: string[] = []
+  
+  output.push("## Skill Discovery Results\n")
+  
+  if (result.found.length > 0) {
+    output.push("**Found:**")
+    for (const skill of result.found) {
+      const desc = skill.description ? ` - "${skill.description}"` : ""
+      output.push(`- ${skill.skill}: found in ${skill.repo}${desc}`)
+    }
+    output.push("")
+  }
+  
+  if (result.notFound.length > 0) {
+    output.push("**Not Found:**")
+    for (const stack of result.notFound) {
+      const skillName = STACK_TO_SKILL[stack] || stack.toLowerCase().replace(/[^a-z0-9]/g, "-")
+      output.push(`- ${skillName} (${stack}): NOT FOUND (checked: ${reposToSearch.join(", ")})`)
+    }
+    output.push("")
+  }
+  
+  if (result.errors.length > 0) {
+    output.push("**Errors:**")
+    for (const error of result.errors) {
+      output.push(`- ${error}`)
+    }
+    output.push("")
+  }
+  
+  output.push(`**Summary:** ${result.found.length} found, ${result.notFound.length} not found, ${result.errors.length} errors`)
+  
+  // Also return structured JSON for programmatic use
+  output.push("\n```json")
+  output.push(JSON.stringify(result, null, 2))
+  output.push("```")
+  
+  return output.join("\n")
+}

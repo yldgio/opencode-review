@@ -175,14 +175,14 @@ opencode run --agent review-setup "--interactive --discovery"
 
 ### Configure Skill Repositories
 
-Set the `SKILL_REPOS` environment variable to customize where skills are searched:
+Set the `SKILL_REPOS` environment variable to customize where skills are searched. **Only include repositories that are explicitly authorized** (see allowlist rules below):
 
 ```bash
 # Unix/macOS
-export SKILL_REPOS="my-org/skills,yldgio/codereview-skills"
+export SKILL_REPOS="yldgio/codereview-skills,github/awesome-copilot"
 
 # Windows PowerShell
-$env:SKILL_REPOS = "my-org/skills,yldgio/codereview-skills"
+$env:SKILL_REPOS = "yldgio/codereview-skills,github/awesome-copilot"
 ```
 
 **Default repositories** (searched in order, first match wins):
@@ -191,6 +191,43 @@ $env:SKILL_REPOS = "my-org/skills,yldgio/codereview-skills"
 2. `github/awesome-copilot`
 3. `vercel/agent-skills`
 4. `anthropics/skills`
+
+### Authorized Repositories (Allowlist)
+
+Skills **must** be loaded **only** from repositories in the official allowlist. Do **not** load skills from arbitrary or user-provided repositories, and do **not** accept external repo lists without explicit maintainer/user approval.
+
+**Where the allowlist lives:**
+- Default allowlist (discovery): `.opencode/tools/discover-skills.ts` → `DEFAULT_REPOS`
+- Default allowlist (installation): `.opencode/tools/install-skill.ts` → `DEFAULT_REPOS`
+- Documentation: this section (and README "Configure Skill Repositories")
+
+**How to update the allowlist:**
+1. Open a PR that updates `DEFAULT_REPOS` in **both** `.opencode/tools/discover-skills.ts` and `.opencode/tools/install-skill.ts` (keep them in sync).
+2. Update the default repository list in `docs/SETUP.md` and `README.md` to match.
+3. Require maintainer review and release a new version of the setup instructions.
+
+For organization-specific allowlists, set `SKILL_REPOS` in your shell/CI to your approved repos only. No automation should add skills from external sources without explicit maintainer or user approval.
+
+### Secure Configuration Examples
+
+```bash
+# CI: fixed allowlist, discovery enabled
+export SKILL_REPOS="yldgio/codereview-skills,github/awesome-copilot"
+opencode run --agent review-setup "detect the project stack --discovery --ci"
+```
+
+```bash
+# Local: interactive confirmation + discovery
+export SKILL_REPOS="yldgio/codereview-skills"
+opencode run --agent review-setup "detect the project stack --interactive --discovery"
+```
+
+**Best practices:**
+- Require maintainer review before adding a new repo to the allowlist.
+- Verify repository ownership and **signed tags/commits** before approving.
+- Prefer pinned releases/tags when installing skills manually.
+- Keep `SKILL_REPOS` fixed in CI (do not allow PRs to override it).
+- Review skill content before installation.
 
 ### GitHub API Rate Limits
 
@@ -206,7 +243,7 @@ export GITHUB_TOKEN="ghp_your_token_here"
 
 ### Fallback Behavior
 
-If discovery fails (due to rate limiting, network errors, etc.), the system automatically falls back to default behavior: installing all detected skills from the default repository. This ensures the setup process never completely fails due to discovery issues.
+If discovery fails (due to rate limiting, network errors, etc.), the system automatically falls back to default behavior: installing required skills from the **default skill repository**. This ensures the setup process never completely fails due to discovery issues, while still avoiding unapproved sources.
 
 ---
 
