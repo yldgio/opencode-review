@@ -1,5 +1,25 @@
 import { tool } from "@opencode-ai/plugin"
 
+const DEFAULT_REPOS = [
+  "yldgio/codereview-skills",
+  "github/awesome-copilot",
+  "vercel/agent-skills",
+  "anthropics/skills"
+]
+
+const ALLOWED_REPOS = new Set(DEFAULT_REPOS)
+
+function normalizeRepo(repo: string): string | null {
+  if (repo.startsWith("https://")) {
+    const match = repo.match(/github\.com\/([^/]+)\/([^/]+)/)
+    if (!match) return null
+    return `${match[1]}/${match[2].replace(/\.git$/, "")}`
+  }
+  const parts = repo.split("/")
+  if (parts.length === 2) return repo.replace(/\.git$/, "")
+  return null
+}
+
 export default tool({
   description: "Install skills from a GitHub repository. Default: global installation (shared across projects). Use projectLevel=true for project-specific installation.",
   args: {
@@ -11,6 +31,14 @@ export default tool({
     projectLevel: tool.schema.boolean().optional().describe("Install to project (.opencode/rules/) instead of global (~/.config/opencode/rules/). Default: false (global)"),
   },
   async execute(args) {
+    const normalizedRepo = normalizeRepo(args.repo)
+    if (!normalizedRepo) {
+      return `Error: Invalid repo format: ${args.repo}`
+    }
+    if (!ALLOWED_REPOS.has(normalizedRepo)) {
+      return `Error: Repository not allowlisted: ${normalizedRepo}. Only allowlisted repositories can be used.`
+    }
+
     // Check Node.js
     try {
       await Bun.$`node --version`.quiet()
@@ -26,9 +54,7 @@ export default tool({
     }
 
     // Normalize repo to full URL
-    const repoUrl = args.repo.startsWith("https://")
-      ? args.repo
-      : `https://github.com/${args.repo}`
+    const repoUrl = `https://github.com/${normalizedRepo}`
 
     // Normalize skills to array
     const skills = Array.isArray(args.skills) ? args.skills : [args.skills]

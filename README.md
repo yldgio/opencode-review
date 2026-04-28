@@ -107,21 +107,32 @@ opencode run --agent review-setup "detect the project stack --discovery --projec
 
 ### Configure Skill Repositories
 
-By default, discovery searches these repositories (in order):
+By default, discovery searches these repositories (in order). **Only use repositories that are explicitly authorized**:
 1. `yldgio/codereview-skills`
 2. `github/awesome-copilot`
 3. `vercel/agent-skills`
 4. `anthropics/skills`
 
-Override with the `SKILL_REPOS` environment variable:
+Override with the `SKILL_REPOS` environment variable (allowlist only):
 
 ```bash
 # Unix/macOS
-export SKILL_REPOS="my-org/skills,yldgio/codereview-skills"
+export SKILL_REPOS="yldgio/codereview-skills,github/awesome-copilot"
 
 # Windows PowerShell
-$env:SKILL_REPOS = "my-org/skills,yldgio/codereview-skills"
+$env:SKILL_REPOS = "yldgio/codereview-skills,github/awesome-copilot"
+
 ```
+
+**Allowlist management:**
+- Default allowlist is defined in both `.opencode/tools/discover-skills.ts` and `.opencode/tools/install-skill.ts` (`DEFAULT_REPOS` in each).
+- Update the allowlist via PRs, then keep both tools, `docs/SETUP.md`, and this section aligned.
+- Do not accept skills from unapproved repositories without explicit maintainer or user approval.
+
+**Secure usage tips:**
+- Use `--interactive --discovery` when running locally to confirm installations.
+- Pin `SKILL_REPOS` in CI and prevent untrusted overrides.
+- Validate repository ownership and signed tags/commits before approving a new repo.
 
 For higher GitHub API rate limits, set a token:
 
